@@ -1,0 +1,62 @@
+version: '3.3'
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+   potm_mysql_data:
+     external: true
+   potm_redis_data:
+     external: true
+
+services:
+  potm-mysql:
+    build:
+      context: ./mysql
+    environment:
+      TZ: Asia/Shanghai
+      LANG: C.UTF-8
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: root
+    restart: always
+    container_name: potm-mysql
+    image: potm-mysql
+    ports:
+      - 13306:3306
+    volumes:
+      - potm_mysql_data:/var/lib/mysql
+    networks:
+      - backend
+
+  potm-redis:
+    image: redis:7.0.0
+    ports:
+      - 16379:6379
+    restart: always
+    container_name: potm-redis
+    hostname: potm-redis
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - potm_redis_data:/data
+    networks:
+      - backend
+
+#  potm-service:
+#    build:
+#      context: ./potm-service
+#    restart: always
+#    ports:
+#      - 9071:9071
+#    container_name: potm-service
+#    hostname: potm-service
+#    image: potm-service
+#    networks:
+#      - backend
+#    links:
+#      - potm-mysql
+#      - potm-redis
+#    depends_on:
+#      - potm-mysql
+#      - potm-redis

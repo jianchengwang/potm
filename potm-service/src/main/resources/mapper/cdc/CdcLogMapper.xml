@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.potm.infrastructure.cdc.db.dao.CdcLogDao">
+
+    <select id="page" resultType="com.example.potm.interfaces.operate.vo.CdcLogInfoVO">
+        select
+            a.id,
+            a.user_id,
+            a.app_name,
+            a.obj_title,
+            a.obj,
+            a.act,
+            a.path,
+            a.args,
+            a.request_ip,
+            a.cost_time,
+            a.instance_key,
+            a.log_time as `log_date_time`,
+            b.nickname `operatorName` from cdc_log_info a
+            left join t_user b on a.user_id = b.id
+        <where>
+            <if test="param.q != null and param.q != ''">
+                a.user_id = #{param.q} or a.username = #{param.q} or b.name = #{param.q}
+            </if>
+            <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''" >
+                and (${ew.sqlSegment})
+            </if>
+        </where>
+        order by a.log_time desc
+    </select>
+
+    <select id="getCdcLogRowDetails" resultType="com.example.potm.interfaces.operate.vo.CdcLogRowDetailVO">
+        select
+            a.id,
+            a.log_info_id,
+            a.operate,
+            a.db,
+            a.table_name,
+            a.row_id,
+            a.old_data,
+            a.new_data,
+            a.xid,
+            a.log_time as `log_date_time`
+            from cdc_log_row_detail a
+        <where>
+            a.log_info_id = #{logInfoId}
+        </where>
+        order by a.log_time asc
+    </select>
+</mapper>

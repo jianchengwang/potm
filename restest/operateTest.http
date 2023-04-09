@@ -1,0 +1,31 @@
+### 用户名密码登录
+POST {{auth_url}}/loginByUsername
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.global.set("operateToken", response.body.data);
+%}
+
+### 清空数据
+POST {{operate_url}}/test/clearData
+Content-Type: application/json
+Authorization: {{operateToken}}
+
+> {%
+%}
+
+### 创建测试用户
+POST {{operate_url}}/test/generateUser?num=10
+Content-Type: application/json
+Authorization: {{operateToken}}
+
+> {%
+%}

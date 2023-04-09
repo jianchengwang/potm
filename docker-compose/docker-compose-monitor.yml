@@ -1,0 +1,74 @@
+version: '3.3'
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  potm_prom_data:
+    external: true
+  potm_influxdb_data:
+    external: true
+
+services:
+  skywalking-oap:
+    image: apache/skywalking-oap-server:8.4.0-es6
+    container_name: skywalking-oap
+    restart: always
+    ports:
+      - 11800:11800 # agent 上报数据 gRPC 端口
+      - 12800:12800 # ui 读取数据 http 端口
+    networks:
+      - backend
+  skywaling-ui:
+    image: apache/skywalking-ui:8.4.0
+    container_name: skywaling-ui
+    depends_on:
+      - skywalking-oap
+    links:
+      - skywalking-oap
+    ports:
+      - 13800:8080
+    environment:
+      - SW_OAP_ADDRESS=skywalking-oap:12800
+    networks:
+      - backend
+
+  influxdb:
+    image: influxdb:2.6.1
+    container_name: influxdb
+    restart: always
+    environment:
+      - INFLUXDB_DB=influx
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=admin
+    ports:
+      - '8086:8086'
+    volumes:
+      - potm_influxdb_data:/var/lib/influxdb
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - potm_prom_data:/prometheus
+    networks:
+      - backend
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
+    networks:
+      - backend

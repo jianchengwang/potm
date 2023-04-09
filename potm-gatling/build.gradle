@@ -1,0 +1,30 @@
+plugins {
+    id 'io.gatling.gradle' version "3.9.3"
+    id 'org.jetbrains.kotlin.jvm' version '1.8.20'
+}
+
+group = 'org.example'
+version = 'unspecified'
+
+gatling {
+    gatlingVersion = '3.9.3'
+    jvmArgs = ['-server', '-Xms512M', '-Xmx512M']
+    systemProperties = ['file.encoding': 'UTF-8']
+}
+
+repositories {
+    maven{ url "https://plugins.gradle.org/m2/"}
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala-library:2.13.10'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(11)
+}
