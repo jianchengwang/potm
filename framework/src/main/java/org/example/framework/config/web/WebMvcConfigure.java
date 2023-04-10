@@ -43,11 +43,11 @@ public class WebMvcConfigure implements WebMvcConfigurer {
         registrar.registerFormatters(registry);
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowCredentials(true).allowedOriginPatterns("*").allowedHeaders("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS").maxAge(3600);
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**").allowCredentials(true).allowedOriginPatterns("*").allowedHeaders("*")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS").maxAge(3600);
+//    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

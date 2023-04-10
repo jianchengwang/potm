@@ -173,6 +173,9 @@ class PureHttp {
         // 关闭进度条动画
         NProgress.done();
         // 所有的响应异常 区分来源为取消请求/非取消请求
+        if($error.response) {
+          showErrorToast($error.response.status, $error.response.statusText ? $error.response.statusText : "请求错误")
+        }
         return Promise.reject($error);
       }
     );

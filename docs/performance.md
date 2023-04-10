@@ -1,5 +1,6 @@
 ## jvm
 ```
+-Dfile.encoding=UTF-8
 -XX:+PrintGC -Xms2048m -Xmx2048m -Xmn1280m -Xss512k -XX:MaxDirectMemorySize=1024m -XX:MetaspaceSize=384m -XX:ReservedCodeCacheSize=256m
 ```
 

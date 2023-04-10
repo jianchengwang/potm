@@ -1,5 +1,6 @@
 package org.example.framework.config.cdc;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.example.framework.pojo.PO;
 

@@ -1,0 +1,5 @@
+{
+    "skToken": "#{skToken}",
+    "skGoodsId": "#{skGoodsId}",
+    "buyNum": 1
+}

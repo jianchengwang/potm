@@ -9,7 +9,7 @@ import io.gatling.javaapi.http.HttpDsl.*
  */
 object LoginByUsernameRequest {
     val loginByUsername = http("Login By Username")
-            .post("/api/auth/loginByUsername")
+            .post("/svc-core/api/auth/loginByUsername")
             .body(ElFileBody("bodies/LoginByUsername.json"))
             .check(status().`is`(200))
             .check(jsonPath("$.status").find().`is`("200"))

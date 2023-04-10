@@ -2,7 +2,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
 import Paginator from 'primevue/paginator';
-import { userPage, userPost, userPut } from '@/api/user';
+import { userPage, userSave, userDelete } from '@/api/user';
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
 
@@ -20,15 +20,21 @@ const queryParam = ref({
   total: 0,
   userScope: 'OPERATE',
 })
+
+const userStatusOptionList = ref([
+  { label: '正常', code: 'NORMAL' },
+  { label: '冻结', code: 'FROZEN' },
+  { label: '注销', code: 'LOGOUT' },
+])
+const selectedUserStatusOption = ref({})
+
 const records = ref(null);
 const formDialog = ref(false);
-const clearDataDialog = ref(false);
-const deleterecordsDialog = ref(false);
 const form = ref({});
-const selectedRecords = ref(null);
 const dt = ref(null);
 const filters = ref({});
 const submitted = ref(false);
+const deleteDialog = ref(false);
 
 const fetchData = () => {
   queryParam.value.filters = filters; 
@@ -38,55 +44,6 @@ const fetchData = () => {
             queryParam.value.total = res.data.total;
         }
     });
-};
-
-onBeforeMount(() => {
-    initFilters();
-});
-onMounted(() => {
-  fetchData();
-});
-const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-};
-
-const openNew = () => {
-    form.value = {};
-    submitted.value = false;
-    formDialog.value = true;
-};
-
-const hideDialog = () => {
-    formDialog.value = false;
-    submitted.value = false;
-};
-
-const saveform = () => {
-    submitted.value = true;
-    if (form.value.id) {
-        userPut(form.value.id, form.value).then((res) => {
-            if (res.status == 200) {
-                toast.add({ severity: 'success', summary: '操作成功', detail: '更新成功', life: 3000 });
-                formDialog.value = false;
-                form.value = {};
-                fetchData();
-            }
-        });
-    } else {
-        userPost(form.value).then((res) => {
-            if (res.status == 200) {
-                toast.add({ severity: 'success', summary: '操作成功', detail: '新增成功', life: 3000 });
-                formDialog.value = false;
-                form.value = {};
-                fetchData();
-            }
-        });
-    }
-};
-
-const editform = (editform) => {
-    form.value = { ...editform };
-    formDialog.value = true;
 };
 
 const onPage = (event) => {
@@ -100,6 +57,61 @@ const initFilters = () => {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS }
     };
 };
+
+onBeforeMount(() => {
+    initFilters();
+});
+onMounted(() => {
+  fetchData();
+});
+
+const openNew = () => {
+    form.value = {};
+    selectedUserStatusOption.value = {};
+    submitted.value = false;
+    formDialog.value = true;
+};
+
+const hideDialog = () => {
+    formDialog.value = false;
+    submitted.value = false;
+};
+
+const editForm = (rowData) => {
+    form.value = { ...rowData };
+    selectedUserStatusOption.value = userStatusOptionList.value.find((item) => item.code == form.value.userStatus);
+    formDialog.value = true;
+};
+const saveForm = () => {
+    submitted.value = true;
+    if (selectedUserStatusOption.value) {
+        form.value.userStatus = selectedUserStatusOption.value.code;
+    }
+    form.value.userScope = 'OPERATE';
+    userSave(form.value).then((res) => {
+        if (res.status == 200) {
+            toast.add({ severity: 'success', summary: '操作成功', detail: '保存成功', life: 3000 });
+            formDialog.value = false;
+            form.value = {};
+            fetchData();
+        }
+    });
+};
+
+const confirmDeleteForm = (rowData) => {
+    form.value = { ...rowData };
+    deleteDialog.value = true;
+};
+const deleteForm = () => {
+    userDelete(form.value.id).then((res) => {
+        if (res.status == 200) {
+            toast.add({ severity: 'success', summary: '操作成功', detail: '删除成功', life: 3000 });
+            deleteDialog.value = false;
+            form.value = {};
+            fetchData();
+        }
+    });
+};
 </script>
 
 <template>
@@ -110,7 +122,6 @@ const initFilters = () => {
                 <DataTable
                     ref="dt"
                     :value="records"
-                    v-model:selection="selectedRecords"
                     dataKey="id"
                     :filters="filters"
                     responsiveLayout="scroll"
@@ -129,8 +140,8 @@ const initFilters = () => {
                     <Column v-for="col of tableColumns" :key="col.field" :field="col.field" :header="col.header"></Column>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
-                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editform(slotProps.data)" />
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2" @click="confirmDeleteform(slotProps.data)" />
+                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editForm(slotProps.data)" />
+                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2" @click="confirmDeleteForm(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
@@ -160,9 +171,29 @@ const initFilters = () => {
                             <small class="p-invalid" v-if="submitted && !form.mobile">手机号必填</small>
                         </div>
                     </div>
+
+                    <div class="field">
+                        <label for="userStatus">状态</label>
+                        <Dropdown v-model="selectedUserStatusOption" :options="userStatusOptionList" optionLabel="label" placeholder="请选择状态" class="w-ful" />
+                    </div>
                     <template #footer>
                         <Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
-                        <Button label="确定" icon="pi pi-check" class="p-button-text" @click="saveform" />
+                        <Button label="确定" icon="pi pi-check" class="p-button-text" @click="saveForm" />
+                    </template>
+                </Dialog>
+
+
+                <Dialog v-model:visible="deleteDialog" :style="{ width: '450px' }" header="确认删除" :modal="true">
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                        <span v-if="form"
+                            >确定删除运营人员 <b>{{ form.nickname }}</b
+                            >?</span
+                        >
+                    </div>
+                    <template #footer>
+                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="deleteDialog = false" />
+                        <Button label="确定" icon="pi pi-check" class="p-button-text" @click="deleteForm" />
                     </template>
                 </Dialog>
             </div>

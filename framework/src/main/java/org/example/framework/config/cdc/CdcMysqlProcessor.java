@@ -63,7 +63,6 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
     private final CdcProperties properties;
     private final boolean enable;
     private final boolean enableRecord;
-    private final String tablePrefix;
     private final DataSourceProperties dataSourceProperties;
     private final JdbcTemplate jdbcTemplate;
     private URI dbUri;
@@ -71,9 +70,9 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
     private String database;
     private String tableNameLogInfo = CdcSqlTemplate.TABLE_LOG_INFO;
     private String tableNameLogRowDetail = CdcSqlTemplate.TABLE_LOG_ROW_DETAIL;
-    private String sqlLogInfoInsert = CdcSqlTemplate.LOG_INFO_INSERT_SQL;
-    private String sqlLogInfoUpdate = CdcSqlTemplate.LOG_INFO_UPDATE_SQL;
-    private String sqlLogRowDetailInsert = CdcSqlTemplate.LOG_ROW_DETAIL_INSERT_SQL;
+    private final String sqlLogInfoInsert = CdcSqlTemplate.LOG_INFO_INSERT_SQL;
+    private final String sqlLogInfoUpdate = CdcSqlTemplate.LOG_INFO_UPDATE_SQL;
+    private final String sqlLogRowDetailInsert = CdcSqlTemplate.LOG_ROW_DETAIL_INSERT_SQL;
     private BinaryLogClient binaryLogClient;
     private Thread binLogThread;
     private final List<Event> binLogs = new ArrayList<>();
@@ -88,7 +87,6 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
         super();
         this.properties = properties;
         this.enable = properties.isEnable();
-        this.tablePrefix = properties.getTablePrefix();
         this.enableRecord = properties.isEnableRecord();
 
         this.dataSourceProperties = dataSourceProperties;
@@ -132,8 +130,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
         if (logInfo == null) {
             return;
         }
-        if (joinPoint.getSignature() instanceof MethodSignature) {
-            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        if (joinPoint.getSignature() instanceof MethodSignature signature) {
             NotLog notLog = AnnotatedElementUtils.findMergedAnnotation(signature.getMethod(), NotLog.class);
             if (isNotLogAll(notLog)) {
                 return;
@@ -212,7 +209,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                 .stream()
                 .filter(c -> c instanceof ConnectionHolder)
                 .map(c -> (ConnectionHolder) c)
-                .collect(Collectors.toList());
+                .toList();
         if (list.size() == 1) {
             Connection connection = list.get(0).getConnection();
             saveOrUpdateLogInfo(cdcLogInfo, connection);
@@ -343,7 +340,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
         boolean txDone = false;
         EventType eventType = header.getEventType();
         switch (eventType) {
-            case QUERY: {
+            case QUERY -> {
                 QueryEventData queryEventData = event.getData();
                 String sql = queryEventData.getSql();
                 if (sql == null) {
@@ -355,9 +352,8 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                 } else if ("COMMIT".equals(sql)) {
                     txDone = true;
                 }
-                break;
             }
-            case TABLE_MAP: {
+            case TABLE_MAP -> {
                 TableMapEventData data = event.getData();
                 if (database.equals(data.getDatabase())) {
                     tableDataMap.put(data.getTableId(), data);
@@ -367,21 +363,13 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                         logRowDetailTableId = data.getTableId();
                     }
                 }
-                break;
             }
-            case UPDATE_ROWS:
-            case WRITE_ROWS:
-            case DELETE_ROWS:
-            case EXT_UPDATE_ROWS:
-            case EXT_WRITE_ROWS:
-            case EXT_DELETE_ROWS: {
+            case UPDATE_ROWS, WRITE_ROWS, DELETE_ROWS, EXT_UPDATE_ROWS, EXT_WRITE_ROWS, EXT_DELETE_ROWS -> {
                 binLogs.add(event);
-                break;
             }
-            case XID: {
+            case XID -> {
                 binLogs.add(event);
                 txDone = true;
-                break;
             }
         }
         if (txDone && binLogs.size() > 2) {
@@ -390,17 +378,14 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
             Map<String, Serializable> logInfoData = null;
             Event logInfoEvent = binLogs.get(binLogs.size() - 2);
             switch (logInfoEvent.getHeader().getEventType()) {
-                case UPDATE_ROWS:
-                case EXT_UPDATE_ROWS: {
+                case UPDATE_ROWS, EXT_UPDATE_ROWS -> {
                     UpdateRowsEventData data = logInfoEvent.getData();
                     if (data.getTableId() == logInfoTableId) {
                         Map.Entry<Serializable[], Serializable[]> entry = data.getRows().get(0);
                         logInfoData = toRowData(tableDataMap.get(logInfoTableId), data.getIncludedColumns(), entry.getValue());
                     }
-                    break;
                 }
-                case WRITE_ROWS:
-                case EXT_WRITE_ROWS: {
+                case WRITE_ROWS, EXT_WRITE_ROWS -> {
                     WriteRowsEventData data = logInfoEvent.getData();
                     if (data.getTableId() == logInfoTableId) {
                         logInfoData = toRowData(tableDataMap.get(logInfoTableId), data.getIncludedColumns(), data.getRows().get(0));
@@ -427,8 +412,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                         continue;
                     }
                     switch (e.getHeader().getEventType()) {
-                        case DELETE_ROWS:
-                        case EXT_DELETE_ROWS: {
+                        case DELETE_ROWS, EXT_DELETE_ROWS -> {
                             DeleteRowsEventData data = e.getData();
                             for (Serializable[] row : data.getRows()) {
                                 CdcLogRowDetail detail = toLogRowDetail(data.getTableId(), data.getIncludedColumns(), row, null, null);
@@ -437,10 +421,8 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                                     records.add(detail);
                                 }
                             }
-                            break;
                         }
-                        case UPDATE_ROWS:
-                        case EXT_UPDATE_ROWS: {
+                        case UPDATE_ROWS, EXT_UPDATE_ROWS -> {
                             UpdateRowsEventData data = e.getData();
                             for (Map.Entry<Serializable[], Serializable[]> row : data.getRows()) {
                                 CdcLogRowDetail detail = toLogRowDetail(data.getTableId(), data.getIncludedColumnsBeforeUpdate(), row.getKey(),
@@ -450,10 +432,8 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                                     records.add(detail);
                                 }
                             }
-                            break;
                         }
-                        case WRITE_ROWS:
-                        case EXT_WRITE_ROWS: {
+                        case WRITE_ROWS, EXT_WRITE_ROWS -> {
                             WriteRowsEventData data = e.getData();
                             for (Serializable[] row : data.getRows()) {
                                 CdcLogRowDetail detail = toLogRowDetail(data.getTableId(), null, null, data.getIncludedColumns(), row);
@@ -462,12 +442,10 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                                     records.add(detail);
                                 }
                             }
-                            break;
                         }
-                        case XID: {
+                        case XID -> {
                             XidEventData data = e.getData();
                             xid = data.getXid();
-                            break;
                         }
                     }
                 }
@@ -550,7 +528,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
             if (od.isEmpty() && nd.isEmpty()) {
                 return null;
             }
-            if (!pkColumns.isEmpty() && pkColumns.containsAll(od.keySet()) && pkColumns.containsAll(nd.keySet())) {
+            if (!pkColumns.isEmpty() && new HashSet<>(pkColumns).containsAll(od.keySet()) && new HashSet<>(pkColumns).containsAll(nd.keySet())) {
                 return null;
             }
             pkMap = nd;
@@ -670,20 +648,17 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
         if (isMysql) {
             loadTableColumns(null);
             List<String> tables = new ArrayList<>(2);
-            tableNameLogInfo = covertTableName(CdcSqlTemplate.TABLE_LOG_INFO, tablePrefix);
+            tableNameLogInfo = CdcSqlTemplate.TABLE_LOG_INFO;
             if (!tableColumnMap.containsKey(tableNameLogInfo)) {
-                tables.add(covertTableName(CdcSqlTemplate.LOG_INFO_CREATE_TABLE_SQL, tablePrefix));
+                tables.add(CdcSqlTemplate.LOG_INFO_CREATE_TABLE_SQL);
             }
-            tableNameLogRowDetail = covertTableName(CdcSqlTemplate.TABLE_LOG_ROW_DETAIL, tablePrefix);
+            tableNameLogRowDetail = CdcSqlTemplate.TABLE_LOG_ROW_DETAIL;
             if (!tableColumnMap.containsKey(tableNameLogRowDetail)) {
-                tables.add(covertTableName(CdcSqlTemplate.LOG_ROW_DETAIL_CREATE_TABLE_SQL, tablePrefix));
+                tables.add(CdcSqlTemplate.LOG_ROW_DETAIL_CREATE_TABLE_SQL);
             }
             if (!tables.isEmpty()) {
                 jdbcTemplate.batchUpdate(tables.toArray(new String[0]));
             }
-            sqlLogInfoInsert = covertTableName(sqlLogInfoInsert, tablePrefix);
-            sqlLogInfoUpdate = covertTableName(sqlLogInfoUpdate, tablePrefix);
-            sqlLogRowDetailInsert = covertTableName(sqlLogRowDetailInsert, tablePrefix);
         }
 
     }
@@ -724,14 +699,6 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
             tablePkColumnMap.put(table, pkMap.get(table));
             return map.get(table);
         }
-    }
-
-    private static String covertTableName(String sql, String tablePrefix) {
-        if (tablePrefix == null || tablePrefix.trim().isEmpty()) {
-            return sql;
-        }
-        return sql.replace(CdcSqlTemplate.TABLE_LOG_INFO, tablePrefix + CdcSqlTemplate.TABLE_LOG_INFO)
-                .replace(CdcSqlTemplate.TABLE_LOG_ROW_DETAIL, tablePrefix + CdcSqlTemplate.TABLE_LOG_ROW_DETAIL);
     }
 
     private static boolean isNotLogAll(NotLog notLog) {

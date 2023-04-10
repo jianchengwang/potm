@@ -112,7 +112,7 @@ const initFilters = () => {
                     <Column v-for="col of tableColumns" :key="col.field" :field="col.field" :header="col.header"></Column>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
-                            <Button icon="pi pi-search" severity="success" aria-label="查看" @click="showRowDetails(slotProps.data)" />
+                            <Button icon="pi pi-search" aria-label="查看" @click="showRowDetails(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>

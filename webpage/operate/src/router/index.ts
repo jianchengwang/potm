@@ -24,15 +24,15 @@ const router = createRouter({
           component: () => import('@/views/pages/Crud.vue')
         },
         {
-          path: '/client/goods',
-          name: 'clientGoods',
-          component: () => import('@/views/client/Goods.vue')
-        },
-        {
           path: '/client/user',
           name: 'clientUser',
           component: () => import('@/views/client/User.vue')
         },
+        {
+            path: '/seckill/goods',
+            name: 'skGoods',
+            component: () => import('@/views/seckill/Goods.vue')
+          },
         {
             path: '/system/user',
             name: 'systemUser',

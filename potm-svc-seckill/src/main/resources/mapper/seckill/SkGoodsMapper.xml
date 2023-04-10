@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.potm.svc.seckill.infrastructure.sk.db.dao.SkGoodsDao">
+
+    <select id="page" resultType="org.example.potm.svc.seckill.interfaces.operate.vo.SkGoodsVO">
+        select a.* from t_sk_goods a
+        <where>
+            <if test="param != null and param.q != null and param.q!=''" >
+                and (a.goods_name like CONCAT('%',#{param.q},'%'))
+            </if>
+            <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''" >
+                and (${ew.sqlSegment})
+            </if>
+        </where>
+    </select>
+
+    <update id="subStock">
+        update t_sk_goods t1
+        <set>
+            t1.stock_num = t1.stock_num - #{deltaStock}
+        </set>
+        <where>
+            t1.id = #{id}
+            and t1.stock_num > 0
+        </where>
+    </update>
+
+    <update id="loadCacheStock">
+        update t_sk_goods t1
+        <set>
+            t1.stock_num = #{cacheStock}
+        </set>
+        <where>
+            t1.id = #{id}
+        </where>
+    </update>
+</mapper>

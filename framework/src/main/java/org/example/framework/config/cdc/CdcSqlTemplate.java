@@ -18,7 +18,7 @@ public final class CdcSqlTemplate {
             path             varchar(1024)        not null comment '请求路径',
             args             text                 null comment '请求参数',
             request_ip       varchar(32)          null comment '请求IP',
-            cost_time        int                  default 0 not null comment '耗费时间（毫秒）',
+            cost_time        int                  default 0 not null comment '耗费时间,毫秒',
             log_time         datetime             not null comment '记录时间',
             log_last_time    datetime             null comment '最后记录时间，用于多事务情况',
             instance_key     varchar(128)         null comment '实例标识'
@@ -43,9 +43,9 @@ public final class CdcSqlTemplate {
             operate     varchar(32)  not null comment '变更类型',
             db          varchar(128) null comment '数据库名',
             table_name  varchar(128) not null comment '表名',
-            row_id      varchar(128) not null comment '行主键ID(多个主键逗号分割)',
-            old_data    json         null comment '变更前数据(仅包含变化部分数据和主键)',
-            new_data    json         null comment '变更后数据(仅包含变化部分数据和主键)',
+            row_id      varchar(128) not null comment '行主键ID,多个主键逗号分割',
+            old_data    json         null comment '变更前数据,仅包含变化部分数据和主键',
+            new_data    json         null comment '变更后数据,仅包含变化部分数据和主键',
             xid         bigint       null comment '事务ID',
             log_time    datetime     not null comment '记录时间'
         ) comment '变化数据捕获详细记录';
@@ -55,10 +55,10 @@ public final class CdcSqlTemplate {
     """.formatted(TABLE_LOG_ROW_DETAIL);
 
     public final static String ALL_TABLE_COLUMNS = """
-        select TABLE_NAME, COLUMN_NAME, COLUMN_KEY, ORDINAL_POSITION from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = ?; 
+        select TABLE_NAME, COLUMN_NAME, COLUMN_KEY, ORDINAL_POSITION from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = ?;
     """;
 
     public final static String ONE_TABLE_COLUMNS = """
-        select TABLE_NAME, COLUMN_NAME, COLUMN_KEY, ORDINAL_POSITION from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = ? and TABLE_NAME = ?; 
+        select TABLE_NAME, COLUMN_NAME, COLUMN_KEY, ORDINAL_POSITION from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = ? and TABLE_NAME = ?;
     """;
 }

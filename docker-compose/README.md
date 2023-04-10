@@ -2,7 +2,6 @@
 
 ### 服务组成
 
-- potm 后台服务
 - mysql mysql 数据库
 - redis redis 数据库
 - skywalking 链路追踪服务

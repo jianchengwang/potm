@@ -9,7 +9,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author jianchengwang
@@ -20,7 +20,7 @@ public class SpringDocConfigure {
     @Value("${spring.application.name}")
     private String applicationName;
 
-    private String tokenName = "";
+    private String tokenName = "Authorization";
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -36,7 +36,7 @@ public class SpringDocConfigure {
         OpenAPI openAPI = new OpenAPI()
                 .components(components)
                 .info(apiInfo())
-                .security(Arrays.asList(
+                .security(Collections.singletonList(
                         new SecurityRequirement().addList(tokenName)));
         return openAPI;
     }

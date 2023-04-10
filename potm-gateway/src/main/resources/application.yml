@@ -1,0 +1,36 @@
+server:
+  port: 9070
+
+spring:
+  application:
+    name: potm-gateway
+  cloud:
+    gateway:
+      httpserver:
+        wiretap: true
+      routes:
+        - id: potm-openapi
+#          uri: lb://potm-gateway
+          uri: http://127.0.0.1:9070
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+        - id: potm-svc-core
+#          uri: lb://svc-core
+          uri: http://127.0.0.1:9071
+          predicates:
+            - Path=/svc-core/**
+          filters:
+            - StripPrefix=1
+        - id: potm-svc-seckill
+#          uri: lb://svc-seckill
+          uri: http://127.0.0.1:9072
+          predicates:
+            - Path=/svc-seckill/**
+          filters:
+            - StripPrefix=1
+
+app:
+  cdc:
+    enable: false

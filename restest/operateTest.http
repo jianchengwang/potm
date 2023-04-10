@@ -1,5 +1,5 @@
 ### 用户名密码登录
-POST {{auth_url}}/loginByUsername
+POST {{svc-core-url}}/auth/loginByUsername
 Content-Type: application/json
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
 %}
 
 ### 清空数据
-POST {{operate_url}}/test/clearData
+POST {{svc-core-url}}/operate/test/clearData
 Content-Type: application/json
 Authorization: {{operateToken}}
 
@@ -23,7 +23,7 @@ Authorization: {{operateToken}}
 %}
 
 ### 创建测试用户
-POST {{operate_url}}/test/generateUser?num=10
+POST {{svc-core-url}}/operate/test/generateUser?num=10
 Content-Type: application/json
 Authorization: {{operateToken}}
 

@@ -43,15 +43,15 @@ services:
     networks:
       - backend
 
-#  potm-service:
+#  potm-svc-core:
 #    build:
-#      context: ./potm-service
+#      context: ./potm-svc-core
 #    restart: always
 #    ports:
 #      - 9071:9071
-#    container_name: potm-service
-#    hostname: potm-service
-#    image: potm-service
+#    container_name: potm-svc-core
+#    hostname: potm-svc-core
+#    image: potm-svc-core
 #    networks:
 #      - backend
 #    links:

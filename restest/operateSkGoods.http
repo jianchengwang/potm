@@ -1,0 +1,55 @@
+### 用户名密码登录
+POST {{svc-core-url}}/auth/loginByUsername
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "123456"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.global.set("operateToken", response.body.data);
+%}
+
+### 创建秒杀商品
+POST {{svc-seckill-url}}/operate/skGoods/create
+Content-Type: application/json
+Authorization: {{operateToken}}
+
+{
+    "goodsName": "秒杀商品1",
+    "goodsPrice": 20000,
+    "skPrice": 5000,
+    "skNum": 1000,
+    "startTime": "2023-04-04 11:35:00",
+    "endTime": "2023-04-10 11:00:00"
+}
+
+> {%
+client.global.set("skGoodsId", response.body.data);
+%}
+
+### 商品预热
+PUT {{svc-seckill-url}}/operate/skGoods/{{skGoodsId}}/preheat
+Content-Type: application/json
+Authorization: {{operateToken}}
+
+{
+    "entryKey": "djingd!",
+    "buyLimit": 3
+}
+
+> {%
+%}
+
+### 加载缓存库存
+PUT {{svc-seckill-url}}/operate/skGoods/{{skGoodsId}}/loadCacheStock
+Content-Type: application/json
+Authorization: {{operateToken}}
+
+> {%
+%}
+

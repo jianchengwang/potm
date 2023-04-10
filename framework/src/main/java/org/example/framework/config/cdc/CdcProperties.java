@@ -35,11 +35,6 @@ public class CdcProperties {
     private boolean recordAll;
 
     /**
-     * 记录表名前缀，运行中不支持修改
-     */
-    private String tablePrefix;
-
-    /**
      * 需要忽略的表
      */
     private List<Pattern> excludeTables;

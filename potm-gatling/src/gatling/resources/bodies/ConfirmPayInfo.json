@@ -1,0 +1,5 @@
+{
+    "orderNo": "#{orderNo}",
+    "payMethod": "WECHAT",
+    "payMoney": 5000
+}
