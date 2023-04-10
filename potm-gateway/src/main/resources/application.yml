@@ -5,31 +5,37 @@ spring:
   application:
     name: potm-gateway
   cloud:
+    nacos:
+      serverAddr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
     gateway:
       httpserver:
         wiretap: true
       routes:
         - id: potm-openapi
-#          uri: lb://potm-gateway
-          uri: http://127.0.0.1:9070
+          uri: lb://potm-gateway
+#          uri: http://127.0.0.1:9070
           predicates:
             - Path=/v3/api-docs/**
           filters:
             - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
         - id: potm-svc-core
-#          uri: lb://svc-core
-          uri: http://127.0.0.1:9071
+          uri: lb://potm-svc-core
+#          uri: http://127.0.0.1:9071
           predicates:
             - Path=/svc-core/**
           filters:
             - StripPrefix=1
         - id: potm-svc-seckill
-#          uri: lb://svc-seckill
-          uri: http://127.0.0.1:9072
+          uri: lb://potm-svc-seckill
+#          uri: http://127.0.0.1:9072
           predicates:
             - Path=/svc-seckill/**
           filters:
             - StripPrefix=1
+  config:
+    import:
+      - optional:nacos:application.yml
+      - optional:nacos:${spring.application.name}.yml
 
 app:
   cdc:

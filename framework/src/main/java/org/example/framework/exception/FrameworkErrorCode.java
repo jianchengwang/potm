@@ -81,6 +81,7 @@ public enum FrameworkErrorCode implements ErrorCode {
 	REPEAT_SUBMIT_FORM_BY_ONE_USER(429, "重复提交表单，请等待早先数据处理完成"),
 
 	LEGAL_REQUEST(430, "非法访问"),
+	NOT_ALLOW(431, "不允许操作"),
 
 	;
 

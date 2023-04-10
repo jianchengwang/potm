@@ -4,6 +4,7 @@
 
 - mysql mysql 数据库
 - redis redis 数据库
+- nacos nacos 注册与配置中心
 - skywalking 链路追踪服务
 - influxdb 监控服务
 - prometheus 监控服务
@@ -16,6 +17,7 @@
 ```shell
 docker volume create --name=potm_mysql_data
 docker volume create --name=potm_redis_data
+docker volume create --name=potm_nacos_data
 docker volume create --name=potm_prom_data
 docker volume create --name=potm_influxdb_data
 ```
@@ -54,12 +56,14 @@ docker-compose -f docker-compose-monitor.yml down
 ```shell
 docker volume rm potm_mysql_data
 docker volume rm potm_redis_data
+docker volume rm potm_nacos_data
 docker volume rm potm_prom_data
 docker volume rm potm_influxdb_data
 ```
 
 ### 访问
 秒杀服务的接口文档: `http://localhost:9071/swagger-ui/index.html`
+nacos: `http://localhost:8848/nacos`
 skywalking-ui: `http://localhost:13800`
 grafana: `http://localhost:3000`
 

@@ -9,6 +9,8 @@ volumes:
      external: true
    potm_redis_data:
      external: true
+   potm_nacos_data:
+     external: true
 
 services:
   potm-mysql:
@@ -21,6 +23,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
     restart: always
     container_name: potm-mysql
+    hostname: potm-mysql
     image: potm-mysql
     ports:
       - 13306:3306
@@ -28,6 +31,11 @@ services:
       - potm_mysql_data:/var/lib/mysql
     networks:
       - backend
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   potm-redis:
     image: redis:7.0.0
@@ -42,6 +50,23 @@ services:
       - potm_redis_data:/data
     networks:
       - backend
+
+  potm-nacos:
+    image: nacos/nacos-server:v2.2.1
+    container_name: potm-nacos
+    env_file:
+      - ./nacos/nacos-standlone-mysql.env
+    volumes:
+      - potm_nacos_data:/home/nacos/logs
+    networks:
+      - backend
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    depends_on:
+      potm-mysql:
+        condition: service_healthy
+    restart: always
 
 #  potm-svc-core:
 #    build:

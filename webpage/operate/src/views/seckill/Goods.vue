@@ -191,7 +191,7 @@ const initFilters = () => {
                     <img :src="'demo/images/form/' + form.image" :alt="form.image" v-if="form.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" />
                     <div class="field">
                         <label for="goodsName">商品名称</label>
-                        <InputText id="goodsName" v-model.trim="form.goodsName" required="true" autofocus :class="{ 'p-invalid': submitted && !form.name }" />
+                        <InputText id="goodsName" v-model.trim="form.goodsName" required="true" autofocus :class="{ 'p-invalid': submitted && !form.goodsName }" />
                         <small class="p-invalid" v-if="submitted && !form.goodsName">商品名称必填</small>
                     </div>
                     <div class="field">

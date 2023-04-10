@@ -112,6 +112,9 @@ public class UserRepositoryImpl extends ServiceImpl<UserDao, User> implements Us
     @Transactional(rollbackFor = Throwable.class)
     @CacheEvict(key = "'" + CacheConstant.USER_CACHE_PREFIX + "' + #id")
     public void deleteById(Long id) {
+        if(id == 1L) {
+            throw new ClientException("超级管理员不能删除", FrameworkErrorCode.NOT_ALLOW);
+        }
         userDao.deleteById(id);
     }
 }
