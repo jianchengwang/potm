@@ -44,6 +44,11 @@ const router = createRouter({
             component: () => import('@/views/system/CdcLog.vue')
         },
         {
+            path: '/system/dict',
+            name: 'systemDict',
+            component: () => import('@/views/system/Dict.vue')
+        },
+        {
             path: '/uikit/formlayout',
             name: 'formlayout',
             component: () => import('@/views/uikit/FormLayout.vue')

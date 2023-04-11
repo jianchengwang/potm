@@ -9,4 +9,6 @@ public interface CacheConstant {
 
     String USER_CACHE_NAME = "uesr_cache";
     String USER_CACHE_PREFIX = "user_";
+
+    String DICT_CACHE_NAME = "dict_cache";
 }

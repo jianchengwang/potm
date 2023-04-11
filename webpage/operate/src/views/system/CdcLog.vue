@@ -12,7 +12,7 @@ import 'vue-json-pretty/lib/styles.css';
 const tableTitle = ref("操作日志")
 const tableColumns = [
   { field: 'id', header: 'ID' },
-  { field: 'appName', header: '应用名' },
+  { field: 'svcName', header: '服务名' },
   { field: 'objTitle', header: '资源' },
   { field: 'act', header: '方法' },
   { field: 'path', header: '路径' },

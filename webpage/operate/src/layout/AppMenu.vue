@@ -26,6 +26,16 @@ const model = ref([
         items: [
             { label: '运营人员', icon: 'pi pi-fw pi-circle', to: '/system/user' },
             { label: '操作日志', icon: 'pi pi-fw pi-chart-bar', to: '/system/cdcLog' },
+            { label: '字典管理', icon: 'pi pi-fw pi-clone', to: '/system/dict' },
+        ]
+    },
+    {
+        label: '开发平台',
+        items: [
+            { label: '接口文档', icon: 'pi pi-fw pi-image', to: '/develop/apidocs' },
+            { label: '数据源', icon: 'pi pi-fw pi-chart-bar', to: '/develop/datasource' },
+            { label: '代码生成', icon: 'pi pi-fw pi-chart-bar', to: '/develop/codeGen' },
+            { label: '表单设计', icon: 'pi pi-fw pi-pencil', to: '/develop/formDesign' },
         ]
     },
     {

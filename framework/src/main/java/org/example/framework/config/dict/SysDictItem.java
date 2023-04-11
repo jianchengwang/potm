@@ -1,8 +1,10 @@
 package org.example.framework.config.dict;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.example.framework.pojo.PO;
+import org.example.framework.pojo.VO;
 
 import java.time.LocalDateTime;
 
@@ -12,16 +14,25 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("sys_dict_item")
-public class SysDictItem implements PO {
+@Schema(description = "系统字典项-VO")
+public class SysDictItem implements PO, VO {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+    @Schema(description = "服务名")
     private String svcName;
+    @Schema(description = "字典key")
     private String dictKey;
+    @Schema(description = "字典项值")
     private String value;
+    @Schema(description = "字典项标签")
     private String label;
+    @Schema(description = "字典项类型")
     private String type;
+    @Schema(description = "字典项描述")
     private String description;
+    @Schema(description = "字典项排序")
     private Integer sortOrder;
+    @Schema(description = "字典项备注")
     private String remark;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createAt;

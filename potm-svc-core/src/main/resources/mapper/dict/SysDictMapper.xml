@@ -3,7 +3,7 @@
 
 <mapper namespace="com.example.potm.svc.core.infrastructure.dict.db.dao.SysDictDao">
 
-    <select id="page" resultType="com.example.potm.svc.core.interfaces.operate.vo.SysDictVO">
+    <select id="page" resultType="org.example.framework.config.dict.SysDict">
         select
         a.* from sys_dict a
         <where>
@@ -14,14 +14,26 @@
                 and (${ew.sqlSegment})
             </if>
         </where>
+        order by a.svc_name asc, a.dict_key asc
     </select>
 
-    <select id="getItemList" resultType="com.example.potm.svc.core.interfaces.operate.vo.SysDictItemVO">
+    <select id="getItemList" resultType="org.example.framework.config.dict.SysDictItem">
         select
         a.* from sys_dict_item a
         <where>
             a.svc_name = #{svcName} and a.dict_key = #{dictKey}
         </where>
         order by a.sort_order asc
+    </select>
+
+    <select id="fetchAll" resultType="org.example.framework.config.dict.SysDict">
+        select
+        a.* from sys_dict a
+        order by a.svc_name asc, a.dict_key asc
+    </select>
+
+    <select id="fetchItemAll" resultType="org.example.framework.config.dict.SysDictItem">
+        select
+        a.* from sys_dict_item a
     </select>
 </mapper>

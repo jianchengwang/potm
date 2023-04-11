@@ -1,12 +1,14 @@
 package com.example.potm.svc.core.application;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.potm.svc.core.domain.dict.repository.DictRepository;
 import com.example.potm.svc.core.interfaces.operate.query.SysDictQuery;
-import com.example.potm.svc.core.interfaces.operate.vo.SysDictItemVO;
-import com.example.potm.svc.core.interfaces.operate.vo.SysDictVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.framework.config.dict.DictRedisOperator;
+import org.example.framework.config.dict.SysDict;
+import org.example.framework.config.dict.SysDictItem;
 import org.example.framework.pojo.PageInfo;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +24,32 @@ import java.util.List;
 public class DictApplication {
 
     private final DictRepository dictRepository;
+    private final DictRedisOperator dictRedisOperator;
 
-    public IPage<SysDictVO> page(PageInfo pageInfo, SysDictQuery param) {
+    public IPage<SysDict> page(PageInfo pageInfo, SysDictQuery param) {
         return dictRepository.page(pageInfo, param);
     }
 
-    public List<SysDictItemVO> getItemList(String svcName, String dictKey) {
-        return dictRepository.getItemList(svcName, dictKey);
+    public List<SysDict> loadAll(boolean forceLoadFromDb) {
+        List<SysDict> dictList;
+        if(!forceLoadFromDb) {
+            dictList = dictRedisOperator.loadAll();
+            if(CollectionUtil.isNotEmpty(dictList)) {
+                return dictList;
+            }
+        }
+        dictList = dictRepository.fetchAll();
+        dictRedisOperator.putAll(dictList);
+        return dictList;
+    }
+
+    public List<SysDictItem> getItemList(String svcName, String dictKey) {
+        List<SysDictItem> itemList = dictRedisOperator.getItemList(svcName, dictKey);
+        if(CollectionUtil.isNotEmpty(itemList)) {
+            return itemList;
+        }
+        itemList = dictRepository.getItemList(svcName, dictKey);
+        dictRedisOperator.putItemList(svcName, dictKey, itemList);
+        return itemList;
     }
 }

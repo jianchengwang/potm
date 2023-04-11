@@ -7,7 +7,7 @@
         select
             a.id,
             a.user_id,
-            a.app_name,
+            a.svc_name,
             a.obj_title,
             a.obj,
             a.act,
