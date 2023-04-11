@@ -60,6 +60,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
         TransactionSynchronization, WebMvcConfigurer, ApplicationListener<WebServerInitializedEvent>, Ordered {
     private final static ThreadLocal<LogInfo> REQUEST_INFO_HOLDER = new NamedThreadLocal<>("Current RequestInfo for DataChange");
 
+    private final String svcName;
     private final CdcProperties properties;
     private final boolean enable;
     private final boolean enableRecord;
@@ -83,8 +84,9 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
     private long logRowDetailTableId = -1;
     private String currentInstanceKey = UUID.randomUUID().toString();
 
-    public CdcMysqlProcessor(CdcProperties properties, DataSourceProperties dataSourceProperties, JdbcTemplate jdbcTemplate) {
+    public CdcMysqlProcessor(String svcName, CdcProperties properties, DataSourceProperties dataSourceProperties, JdbcTemplate jdbcTemplate) {
         super();
+        this.svcName = svcName;
         this.properties = properties;
         this.enable = properties.isEnable();
         this.enableRecord = properties.isEnableRecord();
@@ -230,7 +232,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                 info.notLog = notLog;
                 info.setInstanceKey(getCurrentInstanceKey());
                 info.setUserId(TokenUserUtil.currentUser().toString());
-                info.setAppName(properties.getAppName());
+                info.setSvcName(svcName);
                 info.setObj((String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE));
                 if(info.getObj()!=null && info.getObj().endsWith("/")) {
                     info.setObj(info.getObj().substring(0, info.getObj().length()-1));
@@ -288,7 +290,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
                     statement.setString(9, logInfo.getInstanceKey());
                     statement.setString(10, logInfo.getArgs());
                     statement.setString(11, logInfo.getObjTitle());
-                    statement.setString(12, logInfo.getAppName());
+                    statement.setString(12, logInfo.getSvcName());
                 } else {
                     if(logInfo.getId() == null) {
                         return;
@@ -656,6 +658,7 @@ public class CdcMysqlProcessor extends WebContentInterceptor implements
             if (!tableColumnMap.containsKey(tableNameLogRowDetail)) {
                 tables.add(CdcSqlTemplate.LOG_ROW_DETAIL_CREATE_TABLE_SQL);
             }
+            // 如果数据表不存在，且当前是消费者模式，则创建数据表
             if (!tables.isEmpty()) {
                 jdbcTemplate.batchUpdate(tables.toArray(new String[0]));
             }

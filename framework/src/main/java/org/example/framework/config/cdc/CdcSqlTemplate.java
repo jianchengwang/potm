@@ -11,7 +11,7 @@ public final class CdcSqlTemplate {
         (
             id               bigint auto_increment not null primary key,
             user_id          varchar(32)          null comment '操作者',
-            app_name         varchar(256)         null comment '应用名称',
+            svc_name         varchar(256)         null comment '服务名称',
             obj_title        varchar(256)         null comment '操作资源名称',
             obj              varchar(128)         null comment '操作资源',
             act              varchar(64)          not null comment '操作动作',
@@ -25,7 +25,7 @@ public final class CdcSqlTemplate {
         ) comment '变化数据捕获操作日志';
     """.formatted(TABLE_LOG_INFO);
     public static final String LOG_INFO_INSERT_SQL = """
-        insert into %s(obj, act, path, request_ip, cost_time, log_time, log_last_time, user_id, instance_key, args, obj_title, app_name)
+        insert into %s(obj, act, path, request_ip, cost_time, log_time, log_last_time, user_id, instance_key, args, obj_title, svc_name)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     """.formatted(TABLE_LOG_INFO);
     public static final String LOG_INFO_UPDATE_SQL = """

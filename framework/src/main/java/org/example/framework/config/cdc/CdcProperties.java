@@ -20,11 +20,6 @@ public class CdcProperties {
     private boolean enable = true;
 
     /**
-     * 应用名称
-     */
-    private String appName = "default";
-
-    /**
      * 是否记录数据变化，运行中不支持修改
      */
     private boolean enableRecord = true;

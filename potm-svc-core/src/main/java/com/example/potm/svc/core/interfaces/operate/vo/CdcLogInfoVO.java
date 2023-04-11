@@ -18,8 +18,8 @@ public class CdcLogInfoVO implements VO {
     private Long id;
     @Schema(description = "操作者编号")
     private String userId;
-    @Schema(description = "应用名称")
-    private String appName;
+    @Schema(description = "服务名称")
+    private String svcName;
     @Schema(description = "操作资源名称")
     private String objTitle;
     @Schema(description = "操作资源")

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.potm.svc.core.infrastructure.dict.db.dao.SysDictDao">
+
+    <select id="page" resultType="com.example.potm.svc.core.interfaces.operate.vo.SysDictVO">
+        select
+        a.* from sys_dict a
+        <where>
+            <if test="param != null and param.q != null and param.q!=''" >
+                and (a.svc_name = #{param.q} or a.dict_key = #{param.q} )
+            </if>
+            <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''" >
+                and (${ew.sqlSegment})
+            </if>
+        </where>
+    </select>
+
+    <select id="getItemList" resultType="com.example.potm.svc.core.interfaces.operate.vo.SysDictItemVO">
+        select
+        a.* from sys_dict_item a
+        <where>
+            a.svc_name = #{svcName} and a.dict_key = #{dictKey}
+        </where>
+        order by a.sort_order asc
+    </select>
+</mapper>

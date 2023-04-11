@@ -42,6 +42,7 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.20.1'
     implementation 'com.zendesk:mysql-binlog-connector-java:0.28.0'
     implementation 'org.aspectj:aspectjweaver:1.9.19'
+    implementation 'org.reflections:reflections:0.10.2'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'

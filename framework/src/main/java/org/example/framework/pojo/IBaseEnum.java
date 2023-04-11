@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public interface IBaseEnum<T extends Serializable> extends IEnum<T> {
     Object getDescription();
-    default Object getName() {
+    default String getName() {
         return this.toString();
     }
 }

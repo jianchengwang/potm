@@ -1,11 +1,13 @@
 package org.example.framework.config.permission.user;
 
+import org.example.framework.config.dict.DictEnum;
 import org.example.framework.pojo.IBaseEnum;
 
 /**
  * @author jianchengwang
  * @date 2023/3/31
  */
+@DictEnum(dictKey = "user_scope_enum", description = "用户归属", svc = "framework")
 public enum UserScopeEnum implements IBaseEnum<Integer> {
     /**
      * 普通用户

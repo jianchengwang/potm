@@ -1,5 +1,8 @@
 package org.example.framework.config.cdc;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -7,7 +10,9 @@ import lombok.Data;
  * @date 2023/4/9
  */
 @Data
+@TableName("cdc_log_row_detail")
 public class CdcLogRowDetail {
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id; // ID
     private Long logInfoId; // 操作日志ID
     private String operate; // 变更类型，INSERT,UPDATE,DELETE

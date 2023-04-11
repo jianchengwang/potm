@@ -1,11 +1,13 @@
 package org.example.framework.config.permission.user;
 
+import org.example.framework.config.dict.DictEnum;
 import org.example.framework.pojo.IBaseEnum;
 
 /**
  * @author jianchengwang
  * @date 2023/3/31
  */
+@DictEnum(dictKey = "user_status_enum", description = "用户状态", svc = "framework")
 public enum UserStatusEnum implements IBaseEnum<Integer> {
     /**
      * 正常

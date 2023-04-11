@@ -1,11 +1,13 @@
 package org.example.potm.svc.seckill.infrastructure.common.enums;
 
+import org.example.framework.config.dict.DictEnum;
 import org.example.framework.pojo.IBaseEnum;
 
 /**
  * @author jianchengwang
  * @date 2023/3/31
  */
+@DictEnum(dictKey = "order_status_enum", description = "订单状态")
 public enum OrderStatusEnum implements IBaseEnum<Integer> {
     NEW(0, "新建订单"),
     PAY_CONFIRM(1, "支付确认"),

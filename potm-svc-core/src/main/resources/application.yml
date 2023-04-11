@@ -56,7 +56,9 @@ sa-token:
 app:
   cdc:
     enable: true
-    appName: potm-svc-core
     excludeTables:
       - ^ACT_.*$
       - ^QRTZ_.*$
+  dict:
+    enable: true
+    enumPackage: org.example.framework,org.example.potm.svc.core

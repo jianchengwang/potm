@@ -1,5 +1,6 @@
 package org.example.framework.config.cdc;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,8 +24,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 })
 @EnableConfigurationProperties(CdcProperties.class)
 public class CdcConfigure {
+
+    @Value("${spring.application.name:default}")
+    private String svcName;
+
     @ConditionalOnClass(name = "org.springframework.web.servlet.config.annotation.WebMvcConfigurer")
-    public static class WithWeb {
+    public class WithWeb {
         @Bean
         @ConditionalOnMissingBean
         @ConditionalOnClass(name = "com.github.shyiko.mysql.binlog.BinaryLogClient")
@@ -32,7 +37,7 @@ public class CdcConfigure {
         public CdcMysqlProcessor cdcMysqlProcessor(DataSourceProperties dataSourceProperties,
                                                    JdbcTemplate jdbcTemplate,
                                                    CdcProperties cdcProperties) {
-            CdcMysqlProcessor processor = new CdcMysqlProcessor(cdcProperties, dataSourceProperties, jdbcTemplate);
+            CdcMysqlProcessor processor = new CdcMysqlProcessor(svcName, cdcProperties, dataSourceProperties, jdbcTemplate);
             return processor;
         }
 

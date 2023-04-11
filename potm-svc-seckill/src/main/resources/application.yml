@@ -56,10 +56,12 @@ sa-token:
 app:
   cdc:
     enable: true
-    appName: potm-svc-seckill
     excludeTables:
       - ^ACT_.*$
       - ^QRTZ_.*$
+  dict:
+    enable: true
+    enumPackage: org.example.framework,org.example.potm.svc.seckill
 
-payUrl: http://localhost:9072/api/thirdparty/wxpay
-backendNotifyUrl: http://localhost:9072/api/client/wxpay/notify
+payUrl: http://localhost:9070/svc-seckill/api/thirdparty/wxpay
+backendNotifyUrl: http://localhost:9070/svc-seckill/api/client/wxpay/notify
