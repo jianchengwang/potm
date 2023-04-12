@@ -17,7 +17,7 @@ const model = ref([
     {
         label: '秒杀模块',
         items: [
-            { label: '秒杀商品', icon: 'pi pi-fw pi-id-card', to: '/seckill/goods' },
+            { label: '秒杀商品', icon: 'pi pi-fw pi-share-alt', to: '/seckill/goods' },
             { label: '秒杀订单', icon: 'pi pi-fw pi-check-square', to: '/seckill/order' },
         ]
     },
@@ -30,12 +30,24 @@ const model = ref([
         ]
     },
     {
-        label: '开发平台',
+        label: '低代码',
+        icon: 'pi pi-fw pi-bookmark',
         items: [
-            { label: '接口文档', icon: 'pi pi-fw pi-image', to: '/develop/apidocs' },
-            { label: '数据源', icon: 'pi pi-fw pi-chart-bar', to: '/develop/datasource' },
-            { label: '代码生成', icon: 'pi pi-fw pi-chart-bar', to: '/develop/codeGen' },
-            { label: '表单设计', icon: 'pi pi-fw pi-pencil', to: '/develop/formDesign' },
+            { label: '数据源', icon: 'pi pi-fw pi-list', to: '/lowcode/datasource' },
+            { label: '代码生成', icon: 'pi pi-fw pi-chart-bar', to: '/lowcode/codeGen' },
+            { label: '代码块', icon: 'pi pi-fw pi-code', to: '/lowcode/block' },
+            { label: '表单设计', icon: 'pi pi-fw pi-pencil', to: '/lowcode/formDesign' }
+        ]
+    }, {
+        label: '运维监控',
+        icon: 'pi pi-fw pi-globe',
+        items: [
+            { label: 'swagger', icon: 'pi pi-fw pi-list', url: 'http://localhost:9070/webjars/swagger-ui/index.html', target: '_blank' },
+            { label: 'nacos', icon: 'pi pi-fw pi-comment', url: 'http://localhost:8848/nacos', target: '_blank' },
+            { label: 'springbootadmin', icon: 'pi pi-fw pi-chart-bar', url: 'http://localhost:9060', target: '_blank' },
+            { label: 'skywalking', icon: 'pi pi-fw pi-image', url: 'http://localhost:13800', target: '_blank' },
+            { label: 'zipkin', icon: 'pi pi-fw pi-times-circle', url: 'http://localhost:9411/zipkin', target: '_blank' },
+            { label: 'grafana', icon: 'pi pi-fw pi-circle', url: 'http://localhost:3000', target: '_blank' },
         ]
     },
     {

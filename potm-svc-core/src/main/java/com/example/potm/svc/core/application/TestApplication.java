@@ -27,7 +27,7 @@ public class TestApplication {
     @Transactional(rollbackFor = Throwable.class)
     public void clearData() {
         jdbcTemplate.execute("""
-            delete from t_user where id > 1;
+            delete from sys_user where id > 1;
             truncate table t_sk_goods;
             truncate table t_sk_order;
             truncate table t_sk_pay_notify;

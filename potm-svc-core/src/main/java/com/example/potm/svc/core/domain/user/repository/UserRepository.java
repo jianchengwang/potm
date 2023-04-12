@@ -6,7 +6,7 @@ import com.example.potm.svc.core.infrastructure.user.db.po.User;
 import com.example.potm.svc.core.interfaces.operate.dto.UserSaveDTO;
 import com.example.potm.svc.core.interfaces.operate.query.UserQuery;
 import com.example.potm.svc.core.interfaces.operate.vo.UserVO;
-import org.example.framework.pojo.PageInfo;
+import org.example.potm.framework.pojo.PageInfo;
 
 /**
  * @author jianchengwang

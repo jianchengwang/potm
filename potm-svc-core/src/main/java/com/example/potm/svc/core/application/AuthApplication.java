@@ -10,11 +10,11 @@ import com.example.potm.svc.core.infrastructure.user.db.po.User;
 import com.example.potm.svc.core.interfaces.auth.vo.UserInfoVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.framework.config.permission.user.TokenUser;
-import org.example.framework.config.permission.user.TokenUserContextHolder;
-import org.example.framework.config.permission.user.UserStatusEnum;
-import org.example.framework.exception.ClientException;
-import org.example.framework.exception.FrameworkErrorCode;
+import org.example.potm.framework.config.permission.user.TokenUser;
+import org.example.potm.framework.config.permission.user.TokenUserContextHolder;
+import org.example.potm.framework.config.permission.user.UserStatusEnum;
+import org.example.potm.framework.exception.ClientException;
+import org.example.potm.framework.exception.FrameworkErrorCode;
 import org.springframework.stereotype.Service;
 
 /**

@@ -2,9 +2,9 @@ package com.example.potm.svc.core.domain.dict.repository;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.potm.svc.core.interfaces.operate.query.SysDictQuery;
-import org.example.framework.config.dict.SysDict;
-import org.example.framework.config.dict.SysDictItem;
-import org.example.framework.pojo.PageInfo;
+import org.example.potm.framework.config.dict.SysDict;
+import org.example.potm.framework.config.dict.SysDictItem;
+import org.example.potm.framework.pojo.PageInfo;
 
 import java.util.List;
 

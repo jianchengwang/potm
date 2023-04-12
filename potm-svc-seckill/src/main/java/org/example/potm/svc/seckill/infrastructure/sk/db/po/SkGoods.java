@@ -2,7 +2,7 @@ package org.example.potm.svc.seckill.infrastructure.sk.db.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-import org.example.framework.pojo.PO;
+import org.example.potm.framework.pojo.PO;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @date 2023/3/30
  */
 @Data
-@TableName("t_sk_goods")
+@TableName("sk_goods")
 public class SkGoods implements PO {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;

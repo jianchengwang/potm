@@ -2,8 +2,8 @@ package org.example.potm.svc.seckill.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.framework.exception.ClientException;
-import org.example.framework.exception.FrameworkErrorCode;
+import org.example.potm.framework.exception.ClientException;
+import org.example.potm.framework.exception.FrameworkErrorCode;
 import org.example.potm.svc.seckill.domain.entity.SkGoodsDomain;
 import org.example.potm.svc.seckill.domain.entity.SkOrderDomain;
 import org.example.potm.svc.seckill.domain.entity.SkUserDomain;

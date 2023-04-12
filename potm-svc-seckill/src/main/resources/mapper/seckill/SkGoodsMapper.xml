@@ -4,7 +4,7 @@
 <mapper namespace="org.example.potm.svc.seckill.infrastructure.sk.db.dao.SkGoodsDao">
 
     <select id="page" resultType="org.example.potm.svc.seckill.interfaces.operate.vo.SkGoodsVO">
-        select a.* from t_sk_goods a
+        select a.* from sk_goods a
         <where>
             <if test="param != null and param.q != null and param.q!=''" >
                 and (a.goods_name like CONCAT('%',#{param.q},'%'))
@@ -16,7 +16,7 @@
     </select>
 
     <update id="subStock">
-        update t_sk_goods t1
+        update sk_goods t1
         <set>
             t1.stock_num = t1.stock_num - #{deltaStock}
         </set>
@@ -27,7 +27,7 @@
     </update>
 
     <update id="loadCacheStock">
-        update t_sk_goods t1
+        update sk_goods t1
         <set>
             t1.stock_num = #{cacheStock}
         </set>

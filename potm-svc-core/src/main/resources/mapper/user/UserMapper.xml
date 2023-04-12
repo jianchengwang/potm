@@ -4,14 +4,14 @@
 <mapper namespace="com.example.potm.svc.core.infrastructure.user.db.dao.UserDao">
 
     <select id="getByUsername" resultType="com.example.potm.svc.core.infrastructure.user.db.po.User">
-        select a.* from t_user a
+        select a.* from sys_user a
         <where>
             a.username = #{username}
         </where>
     </select>
 
     <select id="page" resultType="com.example.potm.svc.core.interfaces.operate.vo.UserVO">
-        select a.* from t_user a
+        select a.* from sys_user a
         <where>
             <if test="param != null and param.q != null and param.q!=''" >
                 and (a.nickname like CONCAT('%',#{param.q},'%'))

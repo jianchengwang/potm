@@ -3,7 +3,7 @@ package com.example.potm.svc.core.interfaces.auth.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import org.example.framework.pojo.DTO;
+import org.example.potm.framework.pojo.DTO;
 
 /**
  * @author jianchengwang

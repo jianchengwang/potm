@@ -6,10 +6,10 @@ import com.example.potm.svc.core.domain.dict.repository.DictRepository;
 import com.example.potm.svc.core.interfaces.operate.query.SysDictQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.framework.config.dict.DictRedisOperator;
-import org.example.framework.config.dict.SysDict;
-import org.example.framework.config.dict.SysDictItem;
-import org.example.framework.pojo.PageInfo;
+import org.example.potm.framework.config.dict.DictRedisOperator;
+import org.example.potm.framework.config.dict.SysDict;
+import org.example.potm.framework.config.dict.SysDictItem;
+import org.example.potm.framework.pojo.PageInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

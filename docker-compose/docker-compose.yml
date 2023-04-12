@@ -68,6 +68,14 @@ services:
         condition: service_healthy
     restart: always
 
+  potm-zipkin:
+    image: openzipkin/zipkin
+    container_name: potm-zipkin
+    networks:
+      - backend
+    ports:
+      - 9411:9411
+
 #  potm-svc-core:
 #    build:
 #      context: ./potm-svc-core

@@ -41,8 +41,8 @@ dependencyManagement {
 
 dependencies {
     implementation project(':framework')
-    implementation('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config')
-    implementation('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery')
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -57,6 +57,13 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.20.1'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // sba client
+    implementation 'de.codecentric:spring-boot-admin-starter-client:3.0.2'
+    //  zipkin
+    implementation 'io.micrometer:micrometer-observation:1.10.5'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave:1.0.3'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave:2.16.3'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'

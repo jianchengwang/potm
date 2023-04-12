@@ -2,7 +2,7 @@ package org.example.potm.svc.seckill.interfaces.thirdparty.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.example.framework.pojo.DTO;
+import org.example.potm.framework.pojo.DTO;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;

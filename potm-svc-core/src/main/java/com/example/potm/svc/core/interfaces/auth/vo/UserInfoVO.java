@@ -2,8 +2,8 @@ package com.example.potm.svc.core.interfaces.auth.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.example.framework.config.permission.user.UserStatusEnum;
-import org.example.framework.pojo.VO;
+import org.example.potm.framework.config.permission.user.UserStatusEnum;
+import org.example.potm.framework.pojo.VO;
 
 /**
  * @author jianchengwang

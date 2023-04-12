@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.potm.svc.core.interfaces.operate.query.SysDictQuery;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.framework.config.dict.SysDict;
-import org.example.framework.config.dict.SysDictItem;
+import org.example.potm.framework.config.dict.SysDict;
+import org.example.potm.framework.config.dict.SysDictItem;
 
 import java.util.List;
 

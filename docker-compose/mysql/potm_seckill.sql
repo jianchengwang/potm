@@ -1,5 +1,5 @@
 use `potm`;
-create table t_sk_goods
+create table sk_goods
 (
     id            bigint auto_increment comment '主键' primary key,
     goods_name    varchar(64)  not null comment '商品名称',
@@ -18,7 +18,7 @@ create table t_sk_goods
 )
     comment '秒杀商品';
 
-create table t_sk_order
+create table sk_order
 (
     id                 bigint auto_increment comment '主键' primary key,
     order_no           varchar(128)        not null comment '订单编号',
@@ -35,10 +35,10 @@ create table t_sk_order
     order_status       smallint default 0 not null comment '订单状态'
 )
     comment '秒杀订单';
-create unique index t_sk_order_order_no_uindex
-    on t_sk_order (order_no);
+create unique index sk_order_order_no_uindex
+    on sk_order (order_no);
 
-create table t_sk_pay_notify
+create table sk_pay_notify
 (
     id                 bigint auto_increment comment '主键' primary key,
     out_trade_no       varchar(128)        not null comment '业务订单编号',
@@ -52,5 +52,5 @@ create table t_sk_pay_notify
     create_at         datetime           not null comment '创建时间'
 )
     comment '秒杀支付通知';
-create unique index t_sk_pay_notify_out_trade_no_uindex
-    on t_sk_pay_notify (out_trade_no);
+create unique index sk_pay_notify_out_trade_no_uindex
+    on sk_pay_notify (out_trade_no);

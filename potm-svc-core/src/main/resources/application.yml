@@ -1,6 +1,15 @@
 server:
   port: 9071
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  tracing:
+    enabled: true
+    sampling.probability: 1.0
+
 spring:
   application:
     name: potm-svc-core
@@ -61,4 +70,4 @@ app:
       - ^QRTZ_.*$
   dict:
     enable: true
-    enumPackage: org.example.framework,org.example.potm.svc.core
+    enumPackage: org.example.potm.framework,org.example.potm.svc.core

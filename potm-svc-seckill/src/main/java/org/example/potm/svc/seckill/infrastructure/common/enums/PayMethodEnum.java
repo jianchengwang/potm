@@ -1,7 +1,7 @@
 package org.example.potm.svc.seckill.infrastructure.common.enums;
 
-import org.example.framework.config.dict.DictEnum;
-import org.example.framework.pojo.IBaseEnum;
+import org.example.potm.framework.config.dict.DictEnum;
+import org.example.potm.framework.pojo.IBaseEnum;
 
 /**
  * @author jianchengwang

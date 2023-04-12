@@ -11,10 +11,10 @@ import com.example.potm.svc.core.interfaces.operate.vo.CdcLogRowDetailVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.example.framework.config.cdc.CdcLogInfo;
-import org.example.framework.config.mybatis.MpHelper;
-import org.example.framework.pojo.PageInfo;
-import org.example.framework.utils.PageUtils;
+import org.example.potm.framework.config.cdc.CdcLogInfo;
+import org.example.potm.framework.config.mybatis.MpHelper;
+import org.example.potm.framework.pojo.PageInfo;
+import org.example.potm.framework.utils.PageUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -49,6 +49,11 @@ const router = createRouter({
             component: () => import('@/views/system/Dict.vue')
         },
         {
+            path: '/lowcode/block',
+            name: 'lowcodeBlock',
+            component: () => import('@/views/lowcode/Block.vue')
+        },
+        {
             path: '/uikit/formlayout',
             name: 'formlayout',
             component: () => import('@/views/uikit/FormLayout.vue')

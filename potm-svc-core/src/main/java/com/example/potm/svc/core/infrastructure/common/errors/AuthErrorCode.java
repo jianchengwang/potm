@@ -1,6 +1,6 @@
 package com.example.potm.svc.core.infrastructure.common.errors;
 
-import org.example.framework.exception.ErrorCode;
+import org.example.potm.framework.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 /**

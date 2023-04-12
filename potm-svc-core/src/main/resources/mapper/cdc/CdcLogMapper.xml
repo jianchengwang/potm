@@ -18,7 +18,7 @@
             a.instance_key,
             a.log_time as `log_date_time`,
             b.nickname `operatorName` from cdc_log_info a
-            left join t_user b on a.user_id = b.id
+            left join sys_user b on a.user_id = b.id
         <where>
             <if test="param.q != null and param.q != ''">
                 a.user_id = #{param.q} or a.username = #{param.q} or b.name = #{param.q}

@@ -1,7 +1,7 @@
 create database `potm` default character set utf8mb4 collate utf8mb4_general_ci;
 use `potm`;
 
-create table t_svc
+create table sys_svc
 (
     id            bigint auto_increment primary key,
     svc_name      varchar(32) not null comment '服务名称',
@@ -10,7 +10,7 @@ create table t_svc
 )
     comment '服务表';
 
-create table t_user
+create table sys_user
 (
     id            bigint auto_increment primary key,
     username     varchar(32) not null comment '用户名',

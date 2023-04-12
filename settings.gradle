@@ -10,4 +10,6 @@ include 'potm-gatling'
 include 'potm-gateway'
 include 'potm-svc-core'
 include 'potm-svc-seckill'
+include 'potm-svc-lowcode'
+include 'potm-sba'
 

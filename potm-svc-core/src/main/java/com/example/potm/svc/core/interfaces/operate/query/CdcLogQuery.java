@@ -11,7 +11,7 @@ import org.springdoc.core.annotations.ParameterObject;
 @Data
 @ParameterObject
 public class CdcLogQuery {
-    @Parameter(description = "模糊搜索，用户昵称")
+    @Parameter(description = "模糊搜索")
     private String q;
 
     @Parameter(description = "时间范围")

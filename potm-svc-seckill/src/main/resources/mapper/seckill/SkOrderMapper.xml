@@ -4,7 +4,7 @@
 <mapper namespace="org.example.potm.svc.seckill.infrastructure.sk.db.dao.SkOrderDao">
 
     <update id="updateOrderStatus">
-        update t_sk_order t1
+        update sk_order t1
         <set>
             t1.order_status = #{orderStatus}
         </set>
@@ -14,7 +14,7 @@
     </update>
 
     <update id="updateConfirmPayInfo">
-        update t_sk_order t1
+        update sk_order t1
         <set>
             t1.pay_method = #{payMethod},
             t1.pay_money = #{payMoney},
@@ -26,7 +26,7 @@
     </update>
 
     <update id="updatePaySuccess">
-        update t_sk_order t1
+        update sk_order t1
         <set>
             t1.pay_time = #{payTime},
             t1.pay_transaction_id = #{payTransactionId},

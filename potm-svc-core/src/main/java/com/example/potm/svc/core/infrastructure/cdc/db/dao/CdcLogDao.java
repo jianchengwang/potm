@@ -6,7 +6,7 @@ import com.example.potm.svc.core.interfaces.operate.query.CdcLogQuery;
 import com.example.potm.svc.core.interfaces.operate.vo.CdcLogInfoVO;
 import com.example.potm.svc.core.interfaces.operate.vo.CdcLogRowDetailVO;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.framework.config.cdc.CdcLogInfo;
+import org.example.potm.framework.config.cdc.CdcLogInfo;
 
 import java.util.List;
 

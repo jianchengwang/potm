@@ -8,11 +8,11 @@ import com.example.potm.svc.core.infrastructure.dict.db.dao.SysDictDao;
 import com.example.potm.svc.core.interfaces.operate.query.SysDictQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.framework.config.dict.SysDict;
-import org.example.framework.config.dict.SysDictItem;
-import org.example.framework.config.mybatis.MpHelper;
-import org.example.framework.pojo.PageInfo;
-import org.example.framework.utils.PageUtils;
+import org.example.potm.framework.config.dict.SysDict;
+import org.example.potm.framework.config.dict.SysDictItem;
+import org.example.potm.framework.config.mybatis.MpHelper;
+import org.example.potm.framework.pojo.PageInfo;
+import org.example.potm.framework.utils.PageUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;

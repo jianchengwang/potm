@@ -2,7 +2,7 @@ package com.example.potm.svc.core.infrastructure.common.converter;
 
 import com.example.potm.svc.core.infrastructure.user.db.po.User;
 import com.example.potm.svc.core.interfaces.auth.vo.UserInfoVO;
-import org.example.framework.config.permission.user.TokenUser;
+import org.example.potm.framework.config.permission.user.TokenUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

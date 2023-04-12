@@ -2,8 +2,8 @@ package org.example.potm.svc.seckill.domain.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.framework.exception.ClientException;
-import org.example.framework.exception.FrameworkErrorCode;
+import org.example.potm.framework.exception.ClientException;
+import org.example.potm.framework.exception.FrameworkErrorCode;
 import org.example.potm.svc.seckill.domain.repository.SkRedisRepository;
 import org.example.potm.svc.seckill.interfaces.client.dto.CreateOrderDTO;
 

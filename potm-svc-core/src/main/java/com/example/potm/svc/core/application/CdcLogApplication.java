@@ -7,7 +7,7 @@ import com.example.potm.svc.core.interfaces.operate.vo.CdcLogInfoVO;
 import com.example.potm.svc.core.interfaces.operate.vo.CdcLogRowDetailVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.framework.pojo.PageInfo;
+import org.example.potm.framework.pojo.PageInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -2,7 +2,7 @@ package com.example.potm.svc.core.interfaces.operate.query;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Data;
-import org.example.framework.config.permission.user.UserScopeEnum;
+import org.example.potm.framework.config.permission.user.UserScopeEnum;
 import org.springdoc.core.annotations.ParameterObject;
 
 /**

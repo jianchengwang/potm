@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.example.framework.config.permission.user.UserScopeEnum;
-import org.example.framework.config.permission.user.UserStatusEnum;
-import org.example.framework.pojo.DTO;
+import org.example.potm.framework.config.permission.user.UserScopeEnum;
+import org.example.potm.framework.config.permission.user.UserStatusEnum;
+import org.example.potm.framework.pojo.DTO;
 
 /**
  * @author jianchengwang

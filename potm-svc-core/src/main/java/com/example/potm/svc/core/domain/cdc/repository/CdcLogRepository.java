@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.potm.svc.core.interfaces.operate.query.CdcLogQuery;
 import com.example.potm.svc.core.interfaces.operate.vo.CdcLogInfoVO;
 import com.example.potm.svc.core.interfaces.operate.vo.CdcLogRowDetailVO;
-import org.example.framework.pojo.PageInfo;
+import org.example.potm.framework.pojo.PageInfo;
 
 import java.util.List;
 

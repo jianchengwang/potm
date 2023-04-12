@@ -3,7 +3,7 @@ package org.example.potm.svc.seckill.application;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.framework.pojo.PageInfo;
+import org.example.potm.framework.pojo.PageInfo;
 import org.example.potm.svc.seckill.domain.repository.SkGoodsRepository;
 import org.example.potm.svc.seckill.domain.repository.SkRedisRepository;
 import org.example.potm.svc.seckill.infrastructure.sk.db.po.SkGoods;

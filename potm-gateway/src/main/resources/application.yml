@@ -25,9 +25,16 @@ spring:
             - Path=/svc-core/**
           filters:
             - StripPrefix=1
+        - id: potm-svc-lowcode
+          uri: lb://potm-svc-lowcode
+#           uri: http://127.0.0.1:9072
+          predicates:
+            - Path=/svc-lowcode/**
+          filters:
+            - StripPrefix=1
         - id: potm-svc-seckill
           uri: lb://potm-svc-seckill
-#          uri: http://127.0.0.1:9072
+#          uri: http://127.0.0.1:9073
           predicates:
             - Path=/svc-seckill/**
           filters:
@@ -36,7 +43,3 @@ spring:
     import:
       - optional:nacos:application.yml
       - optional:nacos:${spring.application.name}.yml
-
-app:
-  cdc:
-    enable: false
