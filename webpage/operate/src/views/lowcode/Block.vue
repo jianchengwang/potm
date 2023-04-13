@@ -7,11 +7,25 @@ import { lcBlockPage, lcBlockGet, lcBlockSave } from '@/api/lcBlock';
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
 
+import Codemirror from "codemirror-editor-vue3";
+import "codemirror/mode/javascript/javascript.js";
+import "codemirror/mode/css/css.js";
+import "codemirror/theme/dracula.css";
+
+const cmOptions = reactive({
+  mode: "text/javascript",
+  theme: "dracula", // Theme
+  lineNumbers: true, // Show line number
+  smartIndent: true, // Smart indent
+  indentUnit: 2, // The smart indent unit is 2 spaces in length
+  foldGutter: true, // Code folding
+  styleActiveLine: true // Display the style of the selected row
+});
+
 const tableTitle = ref("代码块")
 const tableColumns = [
     { field: 'id', header: 'ID' },
     { field: 'name', header: '名称' },
-    { field: 'description', header: '描述' },
     { field: 'tags', header: '标签' },
     { field: 'createAt', header: '创建时间' }
 ]
@@ -22,21 +36,16 @@ const queryParam = ref({
 })
 const records = ref(null);
 const formDialog = ref(false);
+const blockEditView = ref(true);
+const blockPreviewDialog = ref(false);
 const deleteFormDialog = ref(false);
-const deleterecordsDialog = ref(false);
 const form = ref({});
-const selectedRecords = ref(null);
 const dt = ref(null);
 const filters = ref({});
 const submitted = ref(false);
-const statuses = ref([
-    { label: 'INSTOCK', value: 'instock' },
-    { label: 'LOWSTOCK', value: 'lowstock' },
-    { label: 'OUTOFSTOCK', value: 'outofstock' }
-]);
 
 const fetchData = () => {
-    queryParam.value.filters = filters; 
+    queryParam.value.filters = filters.value; 
     lcBlockPage(queryParam.value).then((res) => {
         queryParam.value.total = res.data.total;
         records.value = res.data.records;
@@ -57,6 +66,7 @@ const openNew = () => {
     form.value = {};
     submitted.value = false;
     formDialog.value = true;
+    blockEditView.value = true;
 };
 
 const hideDialog = () => {
@@ -81,6 +91,7 @@ const saveForm = () => {
 const editForm = (editForm) => {
     form.value = { ...editForm };
     formDialog.value = true;
+    blockEditView.value = true;
 };
 
 const confirmdeleteForm = (editForm) => {
@@ -126,6 +137,11 @@ const deleteselectedRecords = () => {
     toast.add({ severity: 'success', summary: 'Successful', detail: 'records Deleted', life: 3000 });
 };
 
+const openBlockPreview = (editForm) => {
+    form.value = { ...editForm };
+    blockPreviewDialog.value = true;
+};
+
 const initFilters = () => {
     filters.value = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -142,7 +158,6 @@ const initFilters = () => {
                 <DataTable
                     ref="dt"
                     :value="records"
-                    v-model:selection="selectedRecords"
                     dataKey="id"
                     :filters="filters"
                     responsiveLayout="scroll"
@@ -151,27 +166,32 @@ const initFilters = () => {
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                             <div class="my-2">
                                 <Button label="创建" icon="pi pi-plus" class="p-button-success mr-2" @click="openNew" />
-                                <Button label="删除" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected" :disabled="!selectedRecords || !selectedRecords.length" />
                             </div>
-                            <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <!-- <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search" />
                                 <InputText v-model="filters['global'].value" placeholder="Search..." />
+                            </span> -->
+
+                            <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                <Button severity="secondary" icon="pi pi-upload" text rounded aria-label="导入" />
+                                <Button severity="secondary" icon="pi pi-download" text rounded aria-label="导出" />
+                                <Button severity="secondary" icon="pi pi-refresh" text rounded aria-label="刷新" />
                             </span>
                         </div>
                     </template>
 
-                    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
                     <Column v-for="col of tableColumns" :key="col.field" :field="col.field" :header="col.header"></Column>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
                             <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editForm(slotProps.data)" />
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2" @click="confirmdeleteForm(slotProps.data)" />
+                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2" @click="confirmdeleteForm(slotProps.data)" />
+                            <Button icon="pi pi-search" class="p-button-rounded p-button mt-2" @click="openBlockPreview(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
                 <Paginator :rows="queryParam.size" :totalRecords="queryParam.total" :rowsPerPageOptions="[10, 20, 30]" @page="onPage"></Paginator>
 
-                <Dialog v-model:visible="formDialog" maximizable :style="{ width: '90%', height: '80%' }" header="代码块编辑" :modal="true" class="p-fluid">
+                <Dialog v-model:visible="formDialog" maximizable :style="{ width: '90%', height: '85%' }" header="代码块信息" :modal="true" class="p-fluid">
 
                     <div class="formgrid grid">
                         <div class="field col">
@@ -183,15 +203,25 @@ const initFilters = () => {
                             <InputText id="tags" v-model="form.tags" />
                         </div>
                     </div>
-                    <BlockViewer :header="form.name" :code="form.code">
-                    </BlockViewer>
+
+                    <div class="formgrid grid surface-card m-0">
+                        <Codemirror v-if="blockEditView"
+                            v-model:value="form.code"
+                            :options="cmOptions"
+                            border
+                            placeholder=""
+                            :height="auto"
+                        />
+                        <div v-else v-html="form.code" />
+                    </div>
                     <template #footer>
+                        <Button :label="blockEditView ? '预览' : '编辑'" icon="pi pi-search" class="p-button-text" @click="blockEditView = !blockEditView" />
                         <Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
                         <Button label="保存" icon="pi pi-check" class="p-button-text" @click="saveForm" />
                     </template>
                 </Dialog>
 
-                <Dialog v-model:visible="deleteFormDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+                <Dialog v-model:visible="deleteFormDialog" :style="{ width: '450px' }" header="删除确认" :modal="true">
                     <div class="flex align-items-center justify-content-center">
                         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
                         <span v-if="form"
@@ -200,20 +230,15 @@ const initFilters = () => {
                         >
                     </div>
                     <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteFormDialog = false" />
-                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteForm" />
+                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="deleteFormDialog = false" />
+                        <Button label="确定" icon="pi pi-check" class="p-button-text" @click="deleteForm" />
                     </template>
                 </Dialog>
 
-                <Dialog v-model:visible="deleterecordsDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
-                    <div class="flex align-items-center justify-content-center">
-                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="form">Are you sure you want to delete the selected records?</span>
-                    </div>
-                    <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleterecordsDialog = false" />
-                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteselectedRecords" />
-                    </template>
+                <Dialog v-model:visible="blockPreviewDialog" maximizable :style="{ width: '90%', height: '85%' }" header="代码块预览" :modal="true" class="p-fluid">
+                    <BlockViewer :header="form.name" :code="form.code">
+                        <div v-html="form.code" />
+                    </BlockViewer>
                 </Dialog>
             </div>
         </div>

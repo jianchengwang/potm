@@ -2,20 +2,6 @@
 import CodeHighlight from './CodeHighlight.vue';
 
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
-import Codemirror from "codemirror-editor-vue3";
-import "codemirror/mode/javascript/javascript.js";
-import "codemirror/mode/css/css.js";
-import "codemirror/theme/dracula.css";
-
-const cmOptions = reactive({
-  mode: "text/javascript",
-  theme: "dracula", // Theme
-  lineNumbers: true, // Show line number
-  smartIndent: true, // Smart indent
-  indentUnit: 2, // The smart indent unit is 2 spaces in length
-  foldGutter: true, // Code folding
-  styleActiveLine: true // Display the style of the selected row
-});
 
 const props = defineProps({
   header: String,
@@ -63,16 +49,7 @@ const copyCode = async (event) => {
                 <slot><div v-html="props.code"></div></slot>
             </div>
             <div v-if="blockView === BlockView.CODE">
-                <!-- <CodeHighlight class="surface-card m-0">{{code}}</CodeHighlight> -->
-                <div class="surface-card m-0">
-                    <Codemirror
-                        v-model:value="code"
-                        :options="cmOptions"
-                        border
-                        placeholder=""
-                        :height="400"
-                    />
-                </div>
+                <CodeHighlight class="surface-card m-0">{{code}}</CodeHighlight>
             </div>
         </div>
     </div>

@@ -24,7 +24,7 @@ const model = ref([
     {
         label: '系统管理',
         items: [
-            { label: '运营人员', icon: 'pi pi-fw pi-circle', to: '/system/user' },
+            { label: '用户管理', icon: 'pi pi-fw pi-circle', to: '/system/user' },
             { label: '操作日志', icon: 'pi pi-fw pi-chart-bar', to: '/system/cdcLog' },
             { label: '字典管理', icon: 'pi pi-fw pi-clone', to: '/system/dict' },
         ]

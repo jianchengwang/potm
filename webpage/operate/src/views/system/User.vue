@@ -147,7 +147,7 @@ const deleteForm = () => {
                 </DataTable>
                 <Paginator :rows="queryParam.size" :totalRecords="queryParam.total" :rowsPerPageOptions="[10, 20, 30]" @page="onPage"></Paginator>
 
-                <Dialog v-model:visible="formDialog" :style="{ width: '450px' }" header="运营人员信息" :modal="true" class="p-fluid">
+                <Dialog v-model:visible="formDialog" :style="{ width: '450px' }" header="用户信息" :modal="true" class="p-fluid">
                     <div class="formgrid grid">
                         <div class="field col">
                             <label for="username">用户名</label>
@@ -187,7 +187,7 @@ const deleteForm = () => {
                     <div class="flex align-items-center justify-content-center">
                         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
                         <span v-if="form"
-                            >确定删除运营人员 <b>{{ form.nickname }}</b
+                            >确定删除用户 <b>{{ form.nickname }}</b
                             >?</span
                         >
                     </div>
