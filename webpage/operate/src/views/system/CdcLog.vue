@@ -2,7 +2,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
 import Paginator from 'primevue/paginator';
-import { cdcLogPage, cdcLogRowDetails } from '@/api/cdcLog';
+import { cdcLogPage, cdcLogRowDetails } from '@/api/svc-core/cdcLog';
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
 

@@ -20,7 +20,7 @@ const cmOptions = reactive({
   styleActiveLine: true // Display the style of the selected row
 });
 
-import { lcBlockPage, lcBlockGet, lcBlockSave } from '@/api/lcBlock';
+import { blockPage, blockGet, blockSave } from '@/api/svc-lowcode/block';
 
 
 const tableTitle = ref("代码块")
@@ -50,7 +50,7 @@ const submitted = ref(false);
 
 const fetchData = () => {
     queryParam.value.filters = simpleFilters(filters.value); 
-    lcBlockPage(queryParam.value).then((res) => {
+    blockPage(queryParam.value).then((res) => {
         queryParam.value.total = res.data.total;
         records.value = res.data.records;
     });
@@ -111,7 +111,7 @@ const hideDialog = () => {
 const saveForm = () => {
     submitted.value = true;
     let formData = Object.assign({}, form.value);
-    lcBlockSave(formData).then((res) => {
+    blockSave(formData).then((res) => {
         if (res.status == 200) {
             toast.add({ severity: 'success', summary: '成功', detail: '创建成功', life: 3000 });
             formDialog.value = false;

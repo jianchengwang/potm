@@ -2,7 +2,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
 import Paginator from 'primevue/paginator';
-import { userPage } from '@/api/user';
+import { userPage } from '@/api/svc-core/user';
 import { generateUser, clearData } from '@/api/test';
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();

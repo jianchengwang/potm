@@ -6,29 +6,13 @@ import moment from 'moment';
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
 
-import Codemirror from "codemirror-editor-vue3";
-import "codemirror/mode/javascript/javascript.js";
-import "codemirror/mode/css/css.js";
-import "codemirror/theme/dracula.css";
-const cmOptions = reactive({
-  mode: "text/javascript",
-  theme: "dracula", // Theme
-  lineNumbers: true, // Show line number
-  smartIndent: true, // Smart indent
-  indentUnit: 2, // The smart indent unit is 2 spaces in length
-  foldGutter: true, // Code folding
-  styleActiveLine: true // Display the style of the selected row
-});
-
-import { lcDatasourcePage, lcDatasourceGet, lcDatasourceSave } from '@/api/lcDatasource';
+import { datasourcePage, datasourceGet, datasourceSave, datasourceRefreshTable } from '@/api/svc-lowcode/datasource';
 
 
 const tableTitle = ref("数据源")
 const tableColumns = [
     { field: 'id', header: 'ID', sortable: true },
     { field: 'db', header: '数据库', filterField: 'db' },
-    { field: 'username', header: '用户名'},
-    { field: 'password', header: '密码'},
     { field: 'jdbc', header: 'jdbc'},
     { field: 'createAt', header: '创建时间' }
 ]
@@ -52,7 +36,7 @@ const submitted = ref(false);
 
 const fetchData = () => {
     queryParam.value.filters = simpleFilters(filters.value); 
-    lcDatasourcePage(queryParam.value).then((res) => {
+    datasourcePage(queryParam.value).then((res) => {
         queryParam.value.total = res.data.total;
         records.value = res.data.records;
     });
@@ -113,7 +97,7 @@ const hideDialog = () => {
 const saveForm = () => {
     submitted.value = true;
     let formData = Object.assign({}, form.value);
-    lcDatasourceSave(formData).then((res) => {
+    datasourceSave(formData).then((res) => {
         if (res.status == 200) {
             toast.add({ severity: 'success', summary: '成功', detail: '创建成功', life: 3000 });
             formDialog.value = false;
@@ -130,7 +114,7 @@ const editForm = (editForm) => {
     blockEditView.value = true;
 };
 
-const confirmdeleteForm = (editForm) => {
+const confirmDeleteForm = (editForm) => {
     form.value = editForm;
     deleteFormDialog.value = true;
 };
@@ -175,9 +159,13 @@ const deleteselectedRecords = () => {
     toast.add({ severity: 'success', summary: 'Successful', detail: 'records Deleted', life: 3000 });
 };
 
-const openBlockPreview = (editForm) => {
-    form.value = { ...editForm };
-    blockPreviewDialog.value = true;
+const refreshTable = (row) => {
+    datasourceRefreshTable(row.id).then((res) => {
+        if (res.status == 200) {
+            toast.add({ severity: 'success', summary: '成功', detail: '刷新表结构成功', life: 3000 });
+            fetchData();
+        }
+    });
 };
 
 const initFilters = () => {
@@ -240,7 +228,8 @@ const initFilters = () => {
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
                             <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editForm(slotProps.data)" />
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2" @click="confirmdeleteForm(slotProps.data)" />
+                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2" @click="confirmDeleteForm(slotProps.data)" />
+                            <Button icon="pi pi-refresh" class="p-button-rounded p-button mr-2" @click="refreshTable(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
@@ -262,7 +251,7 @@ const initFilters = () => {
                         </div>
                         <div class="field col">
                             <label for="password">密码</label>
-                            <InputText id="password" v-model.trim="form.password" required="true" autofocus :class="{ 'p-invalid': submitted && !form.password }" />
+                            <Password id="password" v-model.trim="form.password" required="true" autofocus :class="{ 'p-invalid': submitted && !form.password }" />
                             <small class="p-invalid" v-if="submitted && !form.password">密码必填</small>                        
                         </div>
                     </div>
@@ -293,12 +282,6 @@ const initFilters = () => {
                         <Button label="取消" icon="pi pi-times" class="p-button-text" @click="deleteFormDialog = false" />
                         <Button label="确定" icon="pi pi-check" class="p-button-text" @click="deleteForm" />
                     </template>
-                </Dialog>
-
-                <Dialog v-model:visible="blockPreviewDialog" maximizable :style="{ width: '90%', height: '85%' }" header="代码块预览" :modal="true" class="p-fluid">
-                    <BlockViewer :header="form.name" :code="form.code">
-                        <div v-html="form.code" />
-                    </BlockViewer>
                 </Dialog>
             </div>
         </div>

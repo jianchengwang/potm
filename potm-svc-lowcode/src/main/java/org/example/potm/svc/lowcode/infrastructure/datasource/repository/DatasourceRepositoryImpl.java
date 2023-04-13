@@ -1,4 +1,4 @@
-package org.example.potm.svc.lowcode.infrastructure.block.repository;
+package org.example.potm.svc.lowcode.infrastructure.datasource.repository;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,7 +10,7 @@ import org.example.potm.framework.config.mybatis.FilterQueryBuilder;
 import org.example.potm.framework.config.mybatis.MpHelper;
 import org.example.potm.framework.pojo.PageInfo;
 import org.example.potm.framework.utils.PageUtils;
-import org.example.potm.svc.lowcode.domain.repository.DatasourceRepository;
+import org.example.potm.svc.lowcode.domain.datasource.repository.DatasourceRepository;
 import org.example.potm.svc.lowcode.infrastructure.datasource.db.dao.DatasourceDao;
 import org.example.potm.svc.lowcode.infrastructure.datasource.db.po.Datasource;
 import org.example.potm.svc.lowcode.interfaces.operate.query.DatasourceQuery;

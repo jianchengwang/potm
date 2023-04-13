@@ -2,7 +2,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
 import Paginator from 'primevue/paginator';
-import { dictPage, dictLoadAll, dictItemList } from '@/api/dict';
+import { dictPage, dictLoadAll, dictItemList } from '@/api/svc-core/dict';
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
 

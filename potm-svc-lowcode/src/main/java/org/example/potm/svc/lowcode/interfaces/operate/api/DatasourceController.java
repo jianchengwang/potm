@@ -36,4 +36,12 @@ public class DatasourceController {
         return Response.ok();
     }
 
+    @Operation(summary = "同步表结构", description = "同步表结构")
+    @PostMapping("{id}/refreshTable")
+    public Response<Void> refreshTable(@PathVariable Long id) {
+        datasourceApplication.refreshTable(id);
+        return Response.ok();
+    }
+
+
 }

@@ -1,7 +1,6 @@
 package org.example.potm.svc.lowcode.infrastructure.block.repository;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,7 +10,7 @@ import org.example.potm.framework.config.mybatis.FilterQueryBuilder;
 import org.example.potm.framework.config.mybatis.MpHelper;
 import org.example.potm.framework.pojo.PageInfo;
 import org.example.potm.framework.utils.PageUtils;
-import org.example.potm.svc.lowcode.domain.repository.BlockRepository;
+import org.example.potm.svc.lowcode.domain.block.repository.BlockRepository;
 import org.example.potm.svc.lowcode.infrastructure.block.db.dao.BlockDao;
 import org.example.potm.svc.lowcode.infrastructure.block.db.po.Block;
 import org.example.potm.svc.lowcode.interfaces.operate.query.BlockQuery;

@@ -1,4 +1,4 @@
-package org.example.potm.svc.lowcode.domain.repository;
+package org.example.potm.svc.lowcode.domain.datasource.repository;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;

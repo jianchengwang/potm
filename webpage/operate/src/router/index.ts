@@ -55,7 +55,7 @@ const router = createRouter({
         },
         {
             path: '/lowcode/datasource',
-            name: 'lowcodeBlock',
+            name: 'lowcodeDatasource',
             component: () => import('@/views/lowcode/Datasource.vue')
         },
         {

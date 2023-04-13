@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
  
-import { loginByUsername } from '@/api/auth.ts'
+import { loginByUsername } from '@/api/svc-core/auth'
 import { setToken, removeToken } from '@/utils/auth.ts'
 
 import router from "@/router/index.ts";

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.potm.framework.pojo.PageInfo;
-import org.example.potm.svc.lowcode.domain.repository.BlockRepository;
+import org.example.potm.svc.lowcode.domain.block.repository.BlockRepository;
 import org.example.potm.svc.lowcode.infrastructure.block.db.po.Block;
 import org.example.potm.svc.lowcode.interfaces.operate.query.BlockQuery;
 import org.springframework.stereotype.Service;
