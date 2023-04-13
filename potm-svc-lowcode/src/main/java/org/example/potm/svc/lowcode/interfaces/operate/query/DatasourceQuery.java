@@ -11,7 +11,7 @@ import org.springdoc.core.annotations.ParameterObject;
  */
 @Data
 @ParameterObject
-public class BlockQuery extends Query {
+public class DatasourceQuery extends Query {
     @Parameter(description = "模糊搜索")
     private String q;
 }

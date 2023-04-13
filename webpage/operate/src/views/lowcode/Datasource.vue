@@ -20,14 +20,16 @@ const cmOptions = reactive({
   styleActiveLine: true // Display the style of the selected row
 });
 
-import { lcBlockPage, lcBlockGet, lcBlockSave } from '@/api/lcBlock';
+import { lcDatasourcePage, lcDatasourceGet, lcDatasourceSave } from '@/api/lcDatasource';
 
 
-const tableTitle = ref("代码块")
+const tableTitle = ref("数据源")
 const tableColumns = [
     { field: 'id', header: 'ID', sortable: true },
-    { field: 'name', header: '名称', filterField: 'name' },
-    { field: 'tags', header: '标签', filterField: 'tags' },
+    { field: 'db', header: '数据库', filterField: 'db' },
+    { field: 'username', header: '用户名'},
+    { field: 'password', header: '密码'},
+    { field: 'jdbc', header: 'jdbc'},
     { field: 'createAt', header: '创建时间' }
 ]
 const queryParam = ref({
@@ -45,12 +47,12 @@ const deleteFormDialog = ref(false);
 const form = ref({});
 const dt = ref(null);
 const filters = ref({});
-const globalFilterFields = ref(['name', 'tags']);
+const globalFilterFields = ref(['db']);
 const submitted = ref(false);
 
 const fetchData = () => {
     queryParam.value.filters = simpleFilters(filters.value); 
-    lcBlockPage(queryParam.value).then((res) => {
+    lcDatasourcePage(queryParam.value).then((res) => {
         queryParam.value.total = res.data.total;
         records.value = res.data.records;
     });
@@ -111,7 +113,7 @@ const hideDialog = () => {
 const saveForm = () => {
     submitted.value = true;
     let formData = Object.assign({}, form.value);
-    lcBlockSave(formData).then((res) => {
+    lcDatasourceSave(formData).then((res) => {
         if (res.status == 200) {
             toast.add({ severity: 'success', summary: '成功', detail: '创建成功', life: 3000 });
             formDialog.value = false;
@@ -232,45 +234,48 @@ const initFilters = () => {
                         :globalFilterFields="globalFilterFields"
                         >
                         <template #filter="{ filterModel, filterCallback }" v-if="globalFilterFields.includes(col.filterField)">
-                            <InputText v-model="filterModel.name" type="text"  @keydown.enter="filterCallback()" class="p-column-filter" placeholder="" v-if="col.filterField == 'name'" filterMatchMode="contains" />
-                            <InputText v-model="filterModel.tags" type="text" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="" v-if="col.filterField == 'tags'" filterMatchMode="contains" />
+                            <InputText v-model="filterModel.db" type="text"  @keydown.enter="filterCallback()" class="p-column-filter" placeholder="" v-if="col.filterField == 'db'" filterMatchMode="contains" />
                         </template>
                     </Column>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
                             <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editForm(slotProps.data)" />
                             <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2" @click="confirmdeleteForm(slotProps.data)" />
-                            <Button icon="pi pi-search" class="p-button-rounded p-button mt-2" @click="openBlockPreview(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
-                <!-- <Paginator :rows="queryParam.size" :totalRecords="queryParam.total" :rowsPerPageOptions="[10, 20, 30]" @page="onPage"></Paginator> -->
 
-                <Dialog v-model:visible="formDialog" maximizable :style="{ width: '90%', height: '85%' }" :header="tableTitle + '信息'" :modal="true" class="p-fluid">
+                <Dialog v-model:visible="formDialog" maximizable :style="{ width: '60%', height: '40%' }" :header="tableTitle + '信息'" :modal="true" class="p-fluid">
 
                     <div class="formgrid grid">
                         <div class="field col">
-                            <label for="name">名称</label>
-                            <InputText id="name" v-model.trim="form.name" required="true" autofocus :class="{ 'p-invalid': submitted && !form.name }" />
-                            <small class="p-invalid" v-if="submitted && !form.name">名称必填</small>                        </div>
+                            <label for="db">数据库</label>
+                            <InputText id="db" v-model.trim="form.db" required="true" autofocus :class="{ 'p-invalid': submitted && !form.db }" />
+                            <small class="p-invalid" v-if="submitted && !form.name">数据库必填</small>                        </div>
+                    </div>
+
+                    <div class="formgrid grid">
                         <div class="field col">
-                            <label for="tags">标签</label>
-                            <InputText id="tags" v-model="form.tags" />
+                            <label for="username">用户名</label>
+                            <InputText id="username" v-model.trim="form.username" required="true" autofocus :class="{ 'p-invalid': submitted && !form.username }" />
+                            <small class="p-invalid" v-if="submitted && !form.username">用户名必填</small>                        
+                        </div>
+                        <div class="field col">
+                            <label for="password">密码</label>
+                            <InputText id="password" v-model.trim="form.password" required="true" autofocus :class="{ 'p-invalid': submitted && !form.password }" />
+                            <small class="p-invalid" v-if="submitted && !form.password">密码必填</small>                        
                         </div>
                     </div>
 
-                    <div class="formgrid grid surface-card m-0">
-                        <Codemirror v-if="blockEditView"
-                            v-model:value="form.code"
-                            :options="cmOptions"
-                            border
-                            placeholder=""
-                            :height="auto"
-                        />
-                        <div v-else v-html="form.code" />
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="jdbc">JDBC</label>
+                            <InputText id="jdbc" v-model.trim="form.jdbc" required="true" autofocus :class="{ 'p-invalid': submitted && !form.jdbc }" />
+                            <small class="p-invalid" v-if="submitted && !form.jdbc">jdbc必填</small>                        
+                        </div>
                     </div>
+
                     <template #footer>
-                        <Button :label="blockEditView ? '预览' : '编辑'" icon="pi pi-search" class="p-button-text" @click="blockEditView = !blockEditView" />
                         <Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
                         <Button label="保存" icon="pi pi-check" class="p-button-text" @click="saveForm" />
                     </template>

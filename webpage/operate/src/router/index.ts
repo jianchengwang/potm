@@ -54,6 +54,11 @@ const router = createRouter({
             component: () => import('@/views/lowcode/Block.vue')
         },
         {
+            path: '/lowcode/datasource',
+            name: 'lowcodeBlock',
+            component: () => import('@/views/lowcode/Datasource.vue')
+        },
+        {
             path: '/uikit/formlayout',
             name: 'formlayout',
             component: () => import('@/views/uikit/FormLayout.vue')

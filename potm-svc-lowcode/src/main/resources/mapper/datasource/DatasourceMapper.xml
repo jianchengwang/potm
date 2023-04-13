@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.potm.svc.lowcode.infrastructure.datasource.db.dao.DatasourceDao">
+
+    <select id="page" resultType="org.example.potm.svc.lowcode.infrastructure.datasource.db.po.Datasource">
+        select a.* from lc_datasource a
+        <where>
+            <if test="param != null and param.q != null and param.q!=''" >
+                and (a.name = #{param.q})
+            </if>
+            <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''" >
+                and (${ew.sqlSegment})
+            </if>
+        </where>
+        order by a.create_at desc
+    </select>
+</mapper>
