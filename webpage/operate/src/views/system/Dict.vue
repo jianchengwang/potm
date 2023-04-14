@@ -2,7 +2,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
 import Paginator from 'primevue/paginator';
-import { dictPage, dictLoadAll, dictItemList } from '@/api/svc-core/dict';
+import { dictPage, dictFetchAll, dictItemList } from '@/api/svc-core/sysDict';
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
 
@@ -29,7 +29,7 @@ const expandedRows = ref([]);
 
 const fetchData = () => {
   queryParam.value.filters = filters; 
-  dictLoadAll(queryParam.value).then((res) => {
+  dictFetchAll(queryParam.value).then((res) => {
         if (res.status == 200) {
             records.value = res.data;
         }

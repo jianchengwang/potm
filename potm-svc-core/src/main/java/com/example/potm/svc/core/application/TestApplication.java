@@ -1,6 +1,6 @@
 package com.example.potm.svc.core.application;
 
-import com.example.potm.svc.core.domain.user.repository.UserRepository;
+import com.example.potm.svc.core.domain.repository.SysUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class TestApplication {
-    private final UserRepository userRepository;
+    private final SysUserRepository userRepository;
     private final RedissonClient redissonClient;
     private final JdbcTemplate jdbcTemplate;
 
@@ -28,9 +28,9 @@ public class TestApplication {
     public void clearData() {
         jdbcTemplate.execute("""
             delete from sys_user where id > 1;
-            truncate table t_sk_goods;
-            truncate table t_sk_order;
-            truncate table t_sk_pay_notify;
+            truncate table sk_goods;
+            truncate table sk_order;
+            truncate table sk_pay_notify;
             truncate table cdc_log_row_detail;
             truncate table cdc_log_info;
         """);

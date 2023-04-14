@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.potm.framework.config.cdc.NotLog;
 import org.example.potm.framework.pojo.Response;
 import org.example.potm.svc.seckill.application.SkPayApplication;
-import org.example.potm.svc.seckill.infrastructure.common.enums.PayMethodEnum;
+import org.example.potm.svc.seckill.infrastructure.constant.enums.PayMethodEnum;
 import org.example.potm.svc.seckill.interfaces.client.dto.PayNotifyDTO;
 import org.example.potm.svc.seckill.interfaces.thirdparty.dto.WxPayNotifyDTO;
 import org.springframework.web.bind.annotation.PostMapping;

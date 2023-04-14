@@ -8,19 +8,19 @@ const model = ref([
         label: '首页',
         items: [{ label: '仪表盘', icon: 'pi pi-fw pi-home', to: '/' }]
     },
-    // {
-    //     label: '客户数据',
-    //     items: [
-    //         { label: '客户信息', icon: 'pi pi-fw pi-id-card', to: '/client/user' },
-    //     ]
-    // },
-    // {
-    //     label: '秒杀模块',
-    //     items: [
-    //         { label: '秒杀商品', icon: 'pi pi-fw pi-share-alt', to: '/seckill/goods' },
-    //         { label: '秒杀订单', icon: 'pi pi-fw pi-check-square', to: '/seckill/order' },
-    //     ]
-    // },
+    {
+        label: '客户数据',
+        items: [
+            { label: '客户信息', icon: 'pi pi-fw pi-id-card', to: '/client/user' },
+        ]
+    },
+    {
+        label: '秒杀模块',
+        items: [
+            { label: '秒杀商品', icon: 'pi pi-fw pi-share-alt', to: '/seckill/goods' },
+            { label: '秒杀订单', icon: 'pi pi-fw pi-check-square', to: '/seckill/order' },
+        ]
+    },
     {
         label: '系统管理',
         items: [

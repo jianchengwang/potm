@@ -1,9 +1,9 @@
 package org.example.potm.svc.seckill.domain.repository;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.example.potm.svc.seckill.infrastructure.common.enums.OrderStatusEnum;
-import org.example.potm.svc.seckill.infrastructure.common.enums.PayMethodEnum;
-import org.example.potm.svc.seckill.infrastructure.sk.db.po.SkOrder;
+import org.example.potm.svc.seckill.infrastructure.constant.enums.OrderStatusEnum;
+import org.example.potm.svc.seckill.infrastructure.constant.enums.PayMethodEnum;
+import org.example.potm.svc.seckill.infrastructure.db.po.SkOrder;
 import org.example.potm.svc.seckill.interfaces.client.dto.PayNotifyDTO;
 
 import java.math.BigInteger;

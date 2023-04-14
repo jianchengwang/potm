@@ -10,7 +10,7 @@ import org.example.potm.framework.pojo.Response;
 import org.example.potm.svc.seckill.application.SkGoodsApplication;
 import org.example.potm.svc.seckill.interfaces.operate.query.SkGoodsQuery;
 import org.example.potm.svc.seckill.interfaces.operate.vo.SkGoodsVO;
-import org.example.potm.svc.seckill.interfaces.operate.dto.SkGoodsCreateDTO;
+import org.example.potm.svc.seckill.interfaces.operate.dto.SkGoodsSaveDTO;
 import org.example.potm.svc.seckill.interfaces.operate.dto.SkGoodsPreheatDTO;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,20 +28,20 @@ public class SkGoodsController {
 
     @Operation(summary = "商品分页", description = "商品分页")
     @GetMapping("page")
-    public Response<IPage<SkGoodsVO>> page(PageInfo pageInfo, SkGoodsQuery query) {
-        return Response.ok(skGoodsApplication.page(pageInfo, query));
+    public Response<IPage<SkGoodsVO>> page(PageInfo pageInfo, SkGoodsQuery param) {
+        return Response.ok(skGoodsApplication.page(pageInfo, param));
     }
 
-    @Operation(summary = "创建商品", description = "创建商品")
-    @PostMapping("create")
-    public Response<Long> create(@Valid @RequestBody SkGoodsCreateDTO skGoodsCreateParam) {
-        return Response.ok(skGoodsApplication.createGoods(skGoodsCreateParam));
+    @Operation(summary = "保存商品", description = "保存商品")
+    @PostMapping("")
+    public Response<Long> save(@Valid @RequestBody SkGoodsSaveDTO param) {
+        return Response.ok(skGoodsApplication.saveGoods(param));
     }
 
     @Operation(summary = "预热商品", description = "预热商品")
     @PutMapping("{skGoodsId}/preheat")
-    public Response<String> preheat(@PathVariable Long skGoodsId, @Valid @RequestBody SkGoodsPreheatDTO preheatParam) {
-        skGoodsApplication.preheat(skGoodsId, preheatParam);
+    public Response<String> preheat(@PathVariable Long skGoodsId, @Valid @RequestBody SkGoodsPreheatDTO param) {
+        skGoodsApplication.preheat(skGoodsId, param);
         return Response.ok();
     }
 

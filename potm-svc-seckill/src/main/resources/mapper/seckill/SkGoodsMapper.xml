@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.example.potm.svc.seckill.infrastructure.sk.db.dao.SkGoodsDao">
+<mapper namespace="org.example.potm.svc.seckill.infrastructure.db.dao.SkGoodsDao">
 
     <select id="page" resultType="org.example.potm.svc.seckill.interfaces.operate.vo.SkGoodsVO">
         select a.* from sk_goods a

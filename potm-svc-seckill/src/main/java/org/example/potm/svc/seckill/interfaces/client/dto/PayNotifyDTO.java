@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.example.potm.framework.pojo.DTO;
-import org.example.potm.svc.seckill.infrastructure.common.enums.PayMethodEnum;
+import org.example.potm.svc.seckill.infrastructure.constant.enums.PayMethodEnum;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;

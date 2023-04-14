@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import org.example.potm.framework.exception.ClientException;
 import org.example.potm.framework.exception.FrameworkErrorCode;
 import org.example.potm.svc.seckill.domain.repository.SkRedisRepository;
-import org.example.potm.svc.seckill.infrastructure.common.enums.OrderStatusEnum;
-import org.example.potm.svc.seckill.infrastructure.sk.db.po.SkOrder;
+import org.example.potm.svc.seckill.infrastructure.constant.enums.OrderStatusEnum;
+import org.example.potm.svc.seckill.infrastructure.db.po.SkOrder;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;

@@ -1,85 +1,75 @@
 <script setup>
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
-import Paginator from 'primevue/paginator';
-import { userPage, userSave, userDelete } from '@/api/svc-core/user';
+import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
+const confirm = useConfirm();
 const toast = useToast();
 
-const tableTitle = ref("运营人员")
-const tableColumns = [
-  { field: 'id', header: 'ID' },
-  { field: 'username', header: '用户名' },
-  { field: 'nickname', header: '昵称' },
-  { field: 'mobile', header: '手机号' },
-  { field: 'userStatus', header: '状态' },
-]
-const queryParam = ref({
-  page: 1,
-  size: 10,
-  total: 0,
-  userScope: 'OPERATE',
-})
+import SysUserService from '@/service/svc-core/SysUserService.ts';
+const sysUserService = new SysUserService();
 
+const fetchTableData = () => {
+  tableConfig.query.filters = tableConfig.filters; 
+  sysUserService.page(tableConfig.query).then((res) => {
+    if (res.status == 200) {
+        tableConfig.records = res.data.records;
+        tableConfig.query.total = res.data.total;
+        }
+    });
+};
+
+onBeforeMount(() => {
+    tableConfig.filters = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
+});
+onMounted(() => {
+    fetchTableData();
+});
+
+const tableConfig = reactive({
+  title: '系统用户',
+  columns: [
+    { field: 'id', header: 'ID' },
+    { field: 'username', header: '用户名' },
+    { field: 'nickname', header: '昵称' },
+    { field: 'mobile', header: '手机号' },
+    { field: 'userStatus', header: '状态' },
+  ],
+  query: {
+    page: 1,
+    size: 10,
+    total: 0,
+    userScope: 'OPERATE',
+  },
+  dt: null,
+  records: null,
+  filters: null,
+  onPage: (event) => {
+    tableConfig.query.page = event.page + 1;
+    tableConfig.query.size = event.rows;
+    fetchTableData();
+  }
+});
+
+const formDialog = ref(false);
+const form = ref({});
+const submitted = ref(false);
 const userStatusOptionList = ref([
   { label: '正常', code: 'NORMAL' },
   { label: '冻结', code: 'FROZEN' },
   { label: '注销', code: 'LOGOUT' },
 ])
 const selectedUserStatusOption = ref({})
-
-const records = ref(null);
-const formDialog = ref(false);
-const form = ref({});
-const dt = ref(null);
-const filters = ref({});
-const submitted = ref(false);
-const deleteDialog = ref(false);
-
-const fetchData = () => {
-  queryParam.value.filters = filters; 
-    userPage(queryParam.value).then((res) => {
-        if (res.status == 200) {
-            records.value = res.data.records;
-            queryParam.value.total = res.data.total;
-        }
-    });
-};
-
-const onPage = (event) => {
-  queryParam.value.page = event.page + 1;
-  queryParam.value.size = event.rows;
-  fetchData();
-};
-
-const initFilters = () => {
-    filters.value = {
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-    };
-};
-
-onBeforeMount(() => {
-    initFilters();
-});
-onMounted(() => {
-  fetchData();
-});
-
-const openNew = () => {
-    form.value = {};
-    selectedUserStatusOption.value = {};
-    submitted.value = false;
-    formDialog.value = true;
-};
-
-const hideDialog = () => {
-    formDialog.value = false;
-    submitted.value = false;
-};
-
-const editForm = (rowData) => {
-    form.value = { ...rowData };
-    selectedUserStatusOption.value = userStatusOptionList.value.find((item) => item.code == form.value.userStatus);
+const editForm = (row) => {
+    if(row) {
+        form.value = { ...row };
+        selectedUserStatusOption.value = userStatusOptionList.value.find((item) => item.code == form.value.userStatus);
+    } else {
+        form.value = {};
+        selectedUserStatusOption.value = {};
+    }
     formDialog.value = true;
 };
 const saveForm = () => {
@@ -88,27 +78,33 @@ const saveForm = () => {
         form.value.userStatus = selectedUserStatusOption.value.code;
     }
     form.value.userScope = 'OPERATE';
-    userSave(form.value).then((res) => {
+    sysUserService.save(form.value).then((res) => {
         if (res.status == 200) {
             toast.add({ severity: 'success', summary: '操作成功', detail: '保存成功', life: 3000 });
             formDialog.value = false;
             form.value = {};
-            fetchData();
+            fetchTableData();
         }
     });
 };
 
-const confirmDeleteForm = (rowData) => {
-    form.value = { ...rowData };
-    deleteDialog.value = true;
-};
-const deleteForm = () => {
-    userDelete(form.value.id).then((res) => {
-        if (res.status == 200) {
-            toast.add({ severity: 'success', summary: '操作成功', detail: '删除成功', life: 3000 });
-            deleteDialog.value = false;
-            form.value = {};
-            fetchData();
+const confirmDelete = (row) => {
+    confirm.require({
+        message: '请确认是否删除该数据？',
+        header: '确认操作',
+        icon: 'pi pi-exclamation-triangle',
+        acceptClass: 'p-button-danger',
+        acceptLabel: '确定',
+        rejectLabel: '取消',
+        accept: () => {
+            sysUserService.delete(row.id).then((res) => {
+                if (res.status == 200) {
+                    toast.add({ severity: 'success', summary: 'Successful', detail: '删除成功', life: 3000 });
+                    fetchTableData();
+                }
+            });
+        },
+        reject: () => {
         }
     });
 };
@@ -118,36 +114,37 @@ const deleteForm = () => {
     <div class="grid">
         <div class="col-12">
             <div class="card">
+                <ConfirmDialog />
                 <Toast />
                 <DataTable
-                    ref="dt"
-                    :value="records"
-                    dataKey="id"
-                    :filters="filters"
-                    responsiveLayout="scroll"
+                :ref="tableConfig.dt"
+                :value="tableConfig.records"
+                dataKey="id"
+                :filters="tableConfig.filters"
+                responsiveLayout="scroll"
+                lazy paginator :rows="tableConfig.query.size" :totalRecords="tableConfig.query.total" :rowsPerPageOptions="[10, 20, 30]" @page="tableConfig.onPage"
                 >
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <div class="my-2">
-                                <Button label="新增" icon="pi pi-plus" class="p-button-success mr-2" @click="openNew" />
+                            <div class="m-0">
+                                <Button label="创建" icon="pi pi-plus" text @click="editForm" />
                             </div>
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText v-model="filters['global'].value" placeholder="Search..." />
+                                <InputText v-model="tableConfig.filters['global'].value" placeholder="Search..." />
                             </span>
                         </div>
                     </template>
-                    <Column v-for="col of tableColumns" :key="col.field" :field="col.field" :header="col.header"></Column>
+                    <Column v-for="col of tableConfig.columns" :key="col.field" :field="col.field" :header="col.header"></Column>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
-                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editForm(slotProps.data)" />
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2" @click="confirmDeleteForm(slotProps.data)" />
+                            <Button label="编辑" text @click="editForm(slotProps.data)" />
+                            <Button label="删除" severity="warning" text class="btn-m2" @click="confirmDelete(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
-                <Paginator :rows="queryParam.size" :totalRecords="queryParam.total" :rowsPerPageOptions="[10, 20, 30]" @page="onPage"></Paginator>
 
-                <Dialog v-model:visible="formDialog" :style="{ width: '450px' }" header="用户信息" :modal="true" class="p-fluid">
+                <Dialog v-model:visible="formDialog" :style="{ width: '450px' }" :header="tableConfig.title" :modal="true" class="p-fluid">
                     <div class="formgrid grid">
                         <div class="field col">
                             <label for="username">用户名</label>
@@ -177,23 +174,8 @@ const deleteForm = () => {
                         <Dropdown v-model="selectedUserStatusOption" :options="userStatusOptionList" optionLabel="label" placeholder="请选择状态" class="w-ful" />
                     </div>
                     <template #footer>
-                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
+                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="formDialog = false" />
                         <Button label="确定" icon="pi pi-check" class="p-button-text" @click="saveForm" />
-                    </template>
-                </Dialog>
-
-
-                <Dialog v-model:visible="deleteDialog" :style="{ width: '450px' }" header="确认删除" :modal="true">
-                    <div class="flex align-items-center justify-content-center">
-                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="form"
-                            >确定删除用户 <b>{{ form.nickname }}</b
-                            >?</span
-                        >
-                    </div>
-                    <template #footer>
-                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="deleteDialog = false" />
-                        <Button label="确定" icon="pi pi-check" class="p-button-text" @click="deleteForm" />
                     </template>
                 </Dialog>
             </div>

@@ -3,10 +3,10 @@ package com.example.potm.svc.core.application;
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
-import com.example.potm.svc.core.domain.user.repository.UserRepository;
-import com.example.potm.svc.core.infrastructure.common.converter.UserConverter;
-import com.example.potm.svc.core.infrastructure.common.errors.AuthErrorCode;
-import com.example.potm.svc.core.infrastructure.user.db.po.User;
+import com.example.potm.svc.core.domain.repository.SysUserRepository;
+import com.example.potm.svc.core.infrastructure.converter.SysUserConverter;
+import com.example.potm.svc.core.infrastructure.constant.errors.AuthErrorCode;
+import com.example.potm.svc.core.infrastructure.db.po.SysUser;
 import com.example.potm.svc.core.interfaces.auth.vo.UserInfoVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +26,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthApplication {
 
-    private final UserRepository userRepository;
+    private final SysUserRepository userRepository;
 
     public String login(String username, String password) {
-        User user = userRepository.findByUsername(username);
+        SysUser user = userRepository.findByUsername(username);
         if(user == null){
             throw new ClientException("用户不存在", FrameworkErrorCode.RESOURCE_NOT_FOUND);
         }
@@ -46,7 +46,7 @@ public class AuthApplication {
         SaTokenInfo token = StpUtil.getTokenInfo();
 
         // 放到用户上下文
-        TokenUser tokenUser = UserConverter.MAPPER.toTokenUser(user);
+        TokenUser tokenUser = SysUserConverter.MAPPER.toTokenUser(user);
         TokenUserContextHolder.setCurrentUser(tokenUser);
 
         return token.getTokenValue();
@@ -58,6 +58,6 @@ public class AuthApplication {
 
     public UserInfoVO getUserInfo() {
         TokenUser tokenUser = TokenUserContextHolder.currentUser();
-        return UserConverter.MAPPER.toUserInfoVO(tokenUser);
+        return SysUserConverter.MAPPER.toUserInfoVO(tokenUser);
     }
 }

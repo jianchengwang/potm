@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.potm.svc.seckill.domain.entity.SkOrderDomain;
 import org.example.potm.svc.seckill.domain.repository.SkOrderRepository;
 import org.example.potm.svc.seckill.domain.repository.SkRedisRepository;
-import org.example.potm.svc.seckill.infrastructure.common.enums.OrderStatusEnum;
-import org.example.potm.svc.seckill.infrastructure.sk.db.po.SkOrder;
+import org.example.potm.svc.seckill.infrastructure.constant.enums.OrderStatusEnum;
+import org.example.potm.svc.seckill.infrastructure.db.po.SkOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

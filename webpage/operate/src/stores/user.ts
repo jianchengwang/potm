@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
- 
-import { loginByUsername } from '@/api/svc-core/auth'
 import { setToken, removeToken } from '@/utils/auth.ts'
-
 import router from "@/router/index.ts";
+
+import AuthService from '@/service/svc-core/AuthService.ts';
+const authService = new AuthService();
 
 // 第一个参数必须是全局唯一
 export const useUserStore = defineStore('userStore', {
@@ -21,7 +21,7 @@ export const useUserStore = defineStore('userStore', {
         this.password = password
       }
       return new Promise((resolve, reject) => {
-        loginByUsername({ username, password })
+        authService.loginByUsername({ username, password })
           .then(data => {
             if (data) {
               setToken(data.data);

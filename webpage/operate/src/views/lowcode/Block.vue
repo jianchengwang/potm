@@ -20,7 +20,7 @@ const cmOptions = reactive({
   styleActiveLine: true // Display the style of the selected row
 });
 
-import { blockPage, blockGet, blockSave } from '@/api/svc-lowcode/block';
+import { blockPage, blockGet, blockSave } from '@/api/svc-lowcode/lcBlock';
 
 
 const tableTitle = ref("代码块")

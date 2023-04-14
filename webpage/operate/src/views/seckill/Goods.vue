@@ -1,14 +1,26 @@
 <script setup>
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
-import Paginator from 'primevue/paginator';
 import moment from 'moment';
-import { skGoodsPage, skGoodsGet, skGoodsCreate, skGoodsPreheat, skGoodsLoadCacheStock } from '@/api/skGoods';
+import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
+const confirm = useConfirm();
 const toast = useToast();
 
-const tableTitle = ref("秒杀商品")
-const tableColumns = [
+import SkGoodsService from '@/service/svc-seckill/SkGoodsService';
+const skGoodsService = new SkGoodsService();
+
+const fetchTableData = () => {
+    tableConfig.query.filters = tableConfig.filters; 
+    skGoodsService.page(tableConfig.query).then((res) => {
+        tableConfig.query.total = res.data.total;
+        tableConfig.tableRecords = res.data.records;
+    });
+};
+
+const tableConfig = reactive({
+  title: '秒杀商品',
+  columns: [
     { field: 'id', header: 'ID' },
     { field: 'goodsName', header: '商品名称' },
     { field: 'goodsPrice', header: '商品价格' },
@@ -17,125 +29,79 @@ const tableColumns = [
     { field: 'stockNum', header: '剩余库存' },
     { field: 'startTime', header: '开始时间' },
     { field: 'endTime', header: '截止时间' },
-]
-const queryParam = ref({
-  page: 1,
-  size: 10,
-  total: 0,
-})
-const records = ref(null);
-const formDialog = ref(false);
-const deleteformDialog = ref(false);
-const deleterecordsDialog = ref(false);
-const form = ref({});
-const selectedRecords = ref(null);
-const dt = ref(null);
-const filters = ref({});
-const submitted = ref(false);
-const statuses = ref([
-    { label: 'INSTOCK', value: 'instock' },
-    { label: 'LOWSTOCK', value: 'lowstock' },
-    { label: 'OUTOFSTOCK', value: 'outofstock' }
-]);
-
-const fetchData = () => {
-    queryParam.value.filters = filters; 
-    skGoodsPage(queryParam.value).then((res) => {
-        queryParam.value.total = res.data.total;
-        records.value = res.data.records;
-    });
-};
+  ],
+  query: {
+    page: 1,
+    size: 10,
+    total: 0,
+  },
+  dt: null,
+  records: null,
+  filters: null,
+  onPage: (event) => {
+    tableConfig.query.page = event.page + 1;
+    tableConfig.query.size = event.rows;
+    fetchTableData();
+  }
+});
 
 onBeforeMount(() => {
-    initFilters();
+    tableConfig.filters = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
 });
 onMounted(() => {
-  fetchData();
+    fetchTableData();
 });
-const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-};
 
-const openNew = () => {
-    form.value = {};
-    submitted.value = false;
+const formDialog = ref(false);
+const form = ref({});
+const submitted = ref(false);
+const editForm = (row) => {
+    if(row) {
+        form.value = { ...row };
+    } else {
+        form.value = {};
+    }
     formDialog.value = true;
-};
-
-const hideDialog = () => {
-    formDialog.value = false;
     submitted.value = false;
 };
-
 const saveform = () => {
     submitted.value = true;
     if (form.value.goodsName && form.value.goodsName.trim()) {
         let formData = Object.assign({}, form.value);
         formData.startTime = moment(formData.satrtTime).format('YYYY-MM-DD HH:mm:ss');
         formData.endTime = moment(formData.endTime).format('YYYY-MM-DD HH:mm:ss');
-        skGoodsCreate(formData).then((res) => {
+        skGoodsService.save(formData).then((res) => {
             if (res.status == 200) {
                 toast.add({ severity: 'success', summary: '成功', detail: '创建成功', life: 3000 });
                 formDialog.value = false;
                 form.value = {};
-                fetchData();
+                fetchTableData();
             }
         });
     }
 };
 
-const editform = (editform) => {
-    form.value = { ...editform };
-    formDialog.value = true;
-};
-
-const confirmDeleteform = (editform) => {
-    form.value = editform;
-    deleteformDialog.value = true;
-};
-
-const deleteform = () => {
-    records.value = records.value.filter((val) => val.id !== form.value.id);
-    deleteformDialog.value = false;
-    form.value = {};
-    toast.add({ severity: 'success', summary: 'Successful', detail: 'form Deleted', life: 3000 });
-};
-
-const findIndexById = (id) => {
-    let index = -1;
-    for (let i = 0; i < records.value.length; i++) {
-        if (records.value[i].id === id) {
-            index = i;
-            break;
+const confirmDelete = (row) => {
+    confirm.require({
+        message: '请确认是否删除该数据？',
+        header: '确认操作',
+        icon: 'pi pi-exclamation-triangle',
+        acceptClass: 'p-button-danger',
+        acceptLabel: '确定',
+        rejectLabel: '取消',
+        accept: () => {
+            skGoodsService.delete(row.id).then((res) => {
+                if (res.status == 200) {
+                    toast.add({ severity: 'success', summary: 'Successful', detail: '删除成功', life: 3000 });
+                    fetchTableData();
+                }
+            });
+        },
+        reject: () => {
         }
-    }
-    return index;
-};
-
-const exportCSV = () => {
-    dt.value.exportCSV();
-};
-
-const onPage = (event) => {
-  queryParam.value.page = event.page + 1;
-  queryParam.value.size = event.rows;
-  fetchData();
-};
-
-const confirmDeleteSelected = () => {
-    deleterecordsDialog.value = true;
-};
-const deleteselectedRecords = () => {
-    records.value = records.value.filter((val) => !selectedRecords.value.includes(val));
-    deleterecordsDialog.value = false;
-    selectedRecords.value = null;
-    toast.add({ severity: 'success', summary: 'Successful', detail: 'records Deleted', life: 3000 });
-};
-
-const initFilters = () => {
-    filters.value = {
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-    };
+    });
 };
 </script>
 
@@ -144,51 +110,37 @@ const initFilters = () => {
         <div class="col-12">
             <div class="card">
                 <Toast />
-                <Toolbar class="mb-4">
-                    <template v-slot:start>
-                        <div class="my-2">
-                            <Button label="创建" icon="pi pi-plus" class="p-button-success mr-2" @click="openNew" />
-                            <Button label="删除" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected" :disabled="!selectedRecords || !selectedRecords.length" />
-                        </div>
-                    </template>
-
-                    <template v-slot:end>
-                        <FileUpload mode="basic" accept="image/*" :maxFileSize="1000000" label="导入" chooseLabel="导入" class="mr-2 inline-block" />
-                        <Button label="导出" icon="pi pi-upload" class="p-button-help" @click="exportCSV($event)" />
-                    </template>
-                </Toolbar>
-
+                <ConfirmDialog />
                 <DataTable
-                    ref="dt"
-                    :value="records"
-                    v-model:selection="selectedRecords"
+                    :ref="tableConfig.dt"
+                    :value="tableConfig.tableRecords"
                     dataKey="id"
-                    :filters="filters"
+                    :filters="tableConfig.filters"
                     responsiveLayout="scroll"
+                    lazy paginator :rows="tableConfig.query.size" :totalRecords="tableConfig.query.total" :rowsPerPageOptions="[10, 20, 30]" @page="tableConfig.onPage"
                 >
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <h5 class="m-0">{{ tableTitle }}</h5>
+                            <div class="m-0">
+                                <Button label="创建" icon="pi pi-plus" text @click="editForm" />
+                            </div>
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText v-model="filters['global'].value" placeholder="Search..." />
+                                <InputText v-model="tableConfig.filters['global'].value" placeholder="Search..." />
                             </span>
                         </div>
                     </template>
 
-                    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-                    <Column v-for="col of tableColumns" :key="col.field" :field="col.field" :header="col.header"></Column>
+                    <Column v-for="col of tableConfig.columns" :key="col.field" :field="col.field" :header="col.header"></Column>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
-                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editform(slotProps.data)" />
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2" @click="confirmDeleteform(slotProps.data)" />
+                            <Button label="编辑" text @click="editForm(slotProps.data)" />
+                            <Button label="删除" severity="warning" text class="btn-m2" @click="confirmDelete(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
-                <Paginator :rows="queryParam.size" :totalRecords="queryParam.total" :rowsPerPageOptions="[10, 20, 30]" @page="onPage"></Paginator>
 
                 <Dialog v-model:visible="formDialog" :style="{ width: '450px' }" header="商品信息" :modal="true" class="p-fluid">
-                    <img :src="'demo/images/form/' + form.image" :alt="form.image" v-if="form.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" />
                     <div class="field">
                         <label for="goodsName">商品名称</label>
                         <InputText id="goodsName" v-model.trim="form.goodsName" required="true" autofocus :class="{ 'p-invalid': submitted && !form.goodsName }" />
@@ -196,14 +148,14 @@ const initFilters = () => {
                     </div>
                     <div class="field">
                         <label for="price">商品价格</label>
-                        <InputNumber id="price" v-model="form.goodsPrice" mode="currency" currency="USD" locale="en-US" :class="{ 'p-invalid': submitted && !form.goodsPrice }" :required="true" />
+                        <InputNumber id="price" v-model="form.goodsPrice" :class="{ 'p-invalid': submitted && !form.goodsPrice }" :required="true" />
                         <small class="p-invalid" v-if="submitted && !form.goodsPrice">商品价格必填</small>
 
                     </div>
                     <div class="formgrid grid">
                         <div class="field col">
                             <label for="price">秒杀价格</label>
-                            <InputNumber id="price" v-model="form.skPrice" mode="currency" currency="USD" locale="en-US" :class="{ 'p-invalid': submitted && !form.skPrice }" :required="true" />
+                            <InputNumber id="price" v-model="form.skPrice" :class="{ 'p-invalid': submitted && !form.skPrice }" :required="true" />
                             <small class="p-invalid" v-if="submitted && !form.skPrice">秒杀价格必填</small>
                         </div>
                         <div class="field col">
@@ -237,33 +189,8 @@ const initFilters = () => {
                         </div>
                     </div>
                     <template #footer>
-                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
+                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="formDialog = false" />
                         <Button label="保存" icon="pi pi-check" class="p-button-text" @click="saveform" />
-                    </template>
-                </Dialog>
-
-                <Dialog v-model:visible="deleteformDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
-                    <div class="flex align-items-center justify-content-center">
-                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="form"
-                            >Are you sure you want to delete <b>{{ form.name }}</b
-                            >?</span
-                        >
-                    </div>
-                    <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteformDialog = false" />
-                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteform" />
-                    </template>
-                </Dialog>
-
-                <Dialog v-model:visible="deleterecordsDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
-                    <div class="flex align-items-center justify-content-center">
-                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="form">Are you sure you want to delete the selected records?</span>
-                    </div>
-                    <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleterecordsDialog = false" />
-                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteselectedRecords" />
                     </template>
                 </Dialog>
             </div>

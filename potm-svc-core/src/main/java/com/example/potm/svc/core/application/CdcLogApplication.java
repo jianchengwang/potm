@@ -1,7 +1,7 @@
 package com.example.potm.svc.core.application;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.example.potm.svc.core.domain.cdc.repository.CdcLogRepository;
+import com.example.potm.svc.core.domain.repository.CdcLogRepository;
 import com.example.potm.svc.core.interfaces.operate.query.CdcLogQuery;
 import com.example.potm.svc.core.interfaces.operate.vo.CdcLogInfoVO;
 import com.example.potm.svc.core.interfaces.operate.vo.CdcLogRowDetailVO;

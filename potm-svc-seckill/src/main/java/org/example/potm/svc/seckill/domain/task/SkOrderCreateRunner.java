@@ -6,7 +6,7 @@ import org.example.potm.svc.seckill.domain.repository.SkGoodsRepository;
 import org.example.potm.svc.seckill.domain.repository.SkOrderRepository;
 import org.example.potm.svc.seckill.domain.repository.SkRedisRepository;
 import org.example.potm.svc.seckill.domain.entity.SkOrderDomain;
-import org.example.potm.svc.seckill.infrastructure.sk.db.po.SkOrder;
+import org.example.potm.svc.seckill.infrastructure.db.po.SkOrder;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;

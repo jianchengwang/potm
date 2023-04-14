@@ -15,7 +15,7 @@ Content-Type: application/json
 %}
 
 ### 创建秒杀商品
-POST {{svc-seckill-url}}/operate/skGoods/create
+POST {{svc-seckill-url}}/operate/skGoods
 Content-Type: application/json
 Authorization: {{operateToken}}
 

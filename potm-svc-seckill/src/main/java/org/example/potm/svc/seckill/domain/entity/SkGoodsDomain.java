@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.potm.framework.exception.ClientException;
 import org.example.potm.framework.exception.FrameworkErrorCode;
-import org.example.potm.svc.seckill.infrastructure.sk.db.po.SkGoods;
+import org.example.potm.svc.seckill.infrastructure.db.po.SkGoods;
 
 import java.time.LocalDateTime;
 

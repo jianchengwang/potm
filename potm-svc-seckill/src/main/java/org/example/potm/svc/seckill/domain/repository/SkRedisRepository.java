@@ -2,7 +2,7 @@ package org.example.potm.svc.seckill.domain.repository;
 
 import org.example.potm.svc.seckill.domain.entity.SkPayDomain;
 import org.example.potm.svc.seckill.domain.entity.SkOrderDomain;
-import org.example.potm.svc.seckill.infrastructure.sk.db.po.SkGoods;
+import org.example.potm.svc.seckill.infrastructure.db.po.SkGoods;
 import org.example.potm.svc.seckill.interfaces.client.dto.PayNotifyDTO;
 import org.redisson.api.RBlockingQueue;
 
