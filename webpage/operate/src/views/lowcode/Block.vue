@@ -1,9 +1,9 @@
 <script setup>
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
+import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
-import Paginator from 'primevue/paginator';
-import moment from 'moment';
+import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
+const confirm = useConfirm();
 const toast = useToast();
 
 import Codemirror from "codemirror-editor-vue3";
@@ -20,41 +20,58 @@ const cmOptions = reactive({
   styleActiveLine: true // Display the style of the selected row
 });
 
-import { blockPage, blockGet, blockSave } from '@/api/svc-lowcode/lcBlock';
+import LcBlockService from '@/service/svc-lowcode/LcBlockService.ts';
+const lcBlockService = new LcBlockService();
 
+const fetchTableData = () => {
+//   tableConfig.query.filters = tableConfig.filters; 
+  lcBlockService.page(tableConfig.query).then((res) => {
+    if (res.status == 200) {
+        tableConfig.records = res.data.records;
+        tableConfig.query.total = res.data.total;
+      }
+    });
+};
 
-const tableTitle = ref("代码块")
-const tableColumns = [
+onBeforeMount(() => {
+    tableConfig.filters = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
+});
+onMounted(() => {
+    fetchTableData();
+});
+
+const tableConfig = reactive({
+  title: '代码块',
+  columns: [
     { field: 'id', header: 'ID', sortable: true },
     { field: 'name', header: '名称', filterField: 'name' },
     { field: 'tags', header: '标签', filterField: 'tags' },
     { field: 'createAt', header: '创建时间' }
-]
-const queryParam = ref({
-  page: 1,
-  size: 10,
-  total: 0,
-  sort: 'id:desc'
-})
-const records = ref(null);
-const formDialog = ref(false);
-const blockEditView = ref(true);
-const blockPreviewDialog = ref(false);
-const deleteFormDialog = ref(false);
+  ],
+  query: {
+    page: 1,
+    size: 10,
+    total: 0,
+    sort: 'id:desc'
+  },
+  records: null,
+  dt: null,
+  filters: null,
+  onPage: (event) => {
+    tableConfig.query.page = event.page + 1;
+    tableConfig.query.size = event.rows;
+    fetchTableData();
+  }
+});
 
+const formDialog = ref(false);
 const form = ref({});
-const dt = ref(null);
-const filters = ref({});
-const globalFilterFields = ref(['name', 'tags']);
 const submitted = ref(false);
 
-const fetchData = () => {
-    queryParam.value.filters = simpleFilters(filters.value); 
-    blockPage(queryParam.value).then((res) => {
-        queryParam.value.total = res.data.total;
-        records.value = res.data.records;
-    });
-};
+const blockEditView = ref(true);
+const blockPreviewDialog = ref(false);
 
 const convertMatchMode = (matchMode) => {
     console.info(matchMode)
@@ -89,164 +106,98 @@ const simpleFilters = () => {
     return filterQuery;
 }
 
-onBeforeMount(() => {
-    initFilters();
-});
-onMounted(() => {
-  fetchData();
-});
-
-const openNew = () => {
-    form.value = {};
-    submitted.value = false;
+const editForm = (row) => {
+    if(row) {
+        form.value = { ...row };
+    } else {
+        form.value = {};
+    }
     formDialog.value = true;
     blockEditView.value = true;
-};
-
-const hideDialog = () => {
-    formDialog.value = false;
-    submitted.value = false;
 };
 
 const saveForm = () => {
     submitted.value = true;
     let formData = Object.assign({}, form.value);
-    blockSave(formData).then((res) => {
+    lcBlockService.save(formData).then((res) => {
         if (res.status == 200) {
             toast.add({ severity: 'success', summary: '成功', detail: '创建成功', life: 3000 });
             formDialog.value = false;
             form.value = {};
-            fetchData();
+            fetchTableData();
         }
     });
-    
 };
 
-const editForm = (editForm) => {
-    form.value = { ...editForm };
-    formDialog.value = true;
-    blockEditView.value = true;
+const confirmDelete = (row) => {
+    confirm.require({
+        message: '请确认是否删除该数据？',
+        header: '确认操作',
+        icon: 'pi pi-exclamation-triangle',
+        acceptClass: 'p-button-danger',
+        acceptLabel: '确定',
+        rejectLabel: '取消',
+        accept: () => {
+            lcBlockService.delete(row.id).then((res) => {
+                if (res.status == 200) {
+                    toast.add({ severity: 'success', summary: 'Successful', detail: '删除成功', life: 3000 });
+                    fetchTableData();
+                }
+            });
+        },
+        reject: () => {
+        }
+    });
 };
 
-const confirmdeleteForm = (editForm) => {
-    form.value = editForm;
-    deleteFormDialog.value = true;
-};
-
-const deleteForm = () => {
-    records.value = records.value.filter((val) => val.id !== form.value.id);
-    deleteFormDialog.value = false;
-    form.value = {};
-    toast.add({ severity: 'success', summary: 'Successful', detail: 'form Deleted', life: 3000 });
-};
-
-const exportCSV = () => {
-    dt.value.exportCSV();
-};
-
-const onPage = (event) => {
-  queryParam.value.page = event.page + 1;
-  queryParam.value.size = event.rows;
-  fetchData();
-};
-
-const onSort = (event) => {
-    if(event.sortField) {
-        const sort = event.sortField + ':' + (event.sortOrder > 0 ?'asc':'desc');
-        queryParam.value.sort = sort;
-    } else {
-        queryParam.value.sort = 'id:desc';
-    }
-    fetchData();
-};
-const onFilter = () => {
-    fetchData();
-};
-
-const confirmDeleteSelected = () => {
-    deleterecordsDialog.value = true;
-};
-const deleteselectedRecords = () => {
-    records.value = records.value.filter((val) => !selectedRecords.value.includes(val));
-    deleterecordsDialog.value = false;
-    selectedRecords.value = null;
-    toast.add({ severity: 'success', summary: 'Successful', detail: 'records Deleted', life: 3000 });
-};
-
-const openBlockPreview = (editForm) => {
-    form.value = { ...editForm };
+const openBlockPreview = (row) => {
+    form.value = { ...row };
     blockPreviewDialog.value = true;
 };
 
-const initFilters = () => {
-    filters.value = {
-        name: { value: '', matchMode: 'contains' },
-        tags: { value: '', matchMode: 'contains' },
-    };
-};
 </script>
 
 <template>
     <div class="grid">
         <div class="col-12">
             <div class="card">
+                <ConfirmDialog />
                 <Toast />
-
                 <DataTable
-                    ref="dt"
-                    :value="records"
-                    dataKey="id"
-                    responsiveLayout="scroll"
-                    lazy paginator
-                    v-model:filters="filters"
-                    :rows="queryParam.size" :totalRecords="queryParam.total" :rowsPerPageOptions="[10, 20, 30]"
-                    filterDisplay="menu"
-                    @page="onPage"
-                    @sort="onSort($event)" 
-                    @filter="onFilter($event)"
+                :ref="tableConfig.dt"
+                :value="tableConfig.records"
+                dataKey="id"
+                :filters="tableConfig.filters"
+                responsiveLayout="scroll"
+                lazy paginator :rows="tableConfig.query.size" :totalRecords="tableConfig.query.total" :rowsPerPageOptions="[10, 20, 30]" @page="tableConfig.onPage"
                 >
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                             <div class="my-2">
-                                <Button label="创建" icon="pi pi-plus" class="p-button-success mr-2" @click="openNew" />
+                                <Button label="创建" icon="pi pi-plus" text @click="editForm" />
                             </div>
-                            <!-- <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <i class="pi pi-search" />
-                                <InputText v-model="filters['global'].value" placeholder="Search..." />
-                            </span> -->
-
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <Button severity="secondary" icon="pi pi-upload" text rounded aria-label="导入" />
-                                <Button severity="secondary" icon="pi pi-download" text rounded aria-label="导出" />
-                                <Button severity="secondary" icon="pi pi-refresh" text rounded aria-label="刷新" @click="fetchData" />
+                                <Button severity="secondary" icon="pi pi-refresh" text rounded aria-label="刷新" @click="fetchTableData" />
                             </span>
                         </div>
                     </template>
 
-                    <Column v-for="col of tableColumns" 
+                    <Column v-for="col of tableConfig.columns" 
                         :key="col.field" :field="col.field" :header="col.header" 
                         lazy paginator
                         :sortable="col.sortable" 
-                        :filterField="col.filterField" 
-                        filterDisplay="row"
-                        :globalFilterFields="globalFilterFields"
                         >
-                        <template #filter="{ filterModel, filterCallback }" v-if="globalFilterFields.includes(col.filterField)">
-                            <InputText v-model="filterModel.name" type="text"  @keydown.enter="filterCallback()" class="p-column-filter" placeholder="" v-if="col.filterField == 'name'" filterMatchMode="contains" />
-                            <InputText v-model="filterModel.tags" type="text" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="" v-if="col.filterField == 'tags'" filterMatchMode="contains" />
-                        </template>
                     </Column>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
-                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editForm(slotProps.data)" />
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2" @click="confirmdeleteForm(slotProps.data)" />
-                            <Button icon="pi pi-search" class="p-button-rounded p-button mt-2" @click="openBlockPreview(slotProps.data)" />
+                            <Button label="编辑" text  @click="editForm(slotProps.data)" />
+                            <Button severity="danger" label="删除" text @click="confirmDelete(slotProps.data)" />
+                            <Button label="预览" text plain @click="openBlockPreview(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
-                <!-- <Paginator :rows="queryParam.size" :totalRecords="queryParam.total" :rowsPerPageOptions="[10, 20, 30]" @page="onPage"></Paginator> -->
 
-                <Dialog v-model:visible="formDialog" maximizable :style="{ width: '90%', height: '85%' }" :header="tableTitle + '信息'" :modal="true" class="p-fluid">
+                <Dialog v-model:visible="formDialog" maximizable :style="{ width: '90%', height: '85%' }" :header="tableConfig.title" :modal="true" class="p-fluid">
 
                     <div class="formgrid grid">
                         <div class="field col">
@@ -265,28 +216,14 @@ const initFilters = () => {
                             :options="cmOptions"
                             border
                             placeholder=""
-                            :height="auto"
+                            :height="450"
                         />
                         <div v-else v-html="form.code" />
                     </div>
                     <template #footer>
                         <Button :label="blockEditView ? '预览' : '编辑'" icon="pi pi-search" class="p-button-text" @click="blockEditView = !blockEditView" />
-                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
+                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="formDialog = false" />
                         <Button label="保存" icon="pi pi-check" class="p-button-text" @click="saveForm" />
-                    </template>
-                </Dialog>
-
-                <Dialog v-model:visible="deleteFormDialog" :style="{ width: '450px' }" header="删除确认" :modal="true">
-                    <div class="flex align-items-center justify-content-center">
-                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="form"
-                            >确定删除 <b>{{ form.name }}</b
-                            >?</span
-                        >
-                    </div>
-                    <template #footer>
-                        <Button label="取消" icon="pi pi-times" class="p-button-text" @click="deleteFormDialog = false" />
-                        <Button label="确定" icon="pi pi-check" class="p-button-text" @click="deleteForm" />
                     </template>
                 </Dialog>
 

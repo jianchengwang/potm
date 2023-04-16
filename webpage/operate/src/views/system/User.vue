@@ -10,7 +10,7 @@ import SysUserService from '@/service/svc-core/SysUserService.ts';
 const sysUserService = new SysUserService();
 
 const fetchTableData = () => {
-  tableConfig.query.filters = tableConfig.filters; 
+//   tableConfig.query.filters = tableConfig.filters; 
   sysUserService.page(tableConfig.query).then((res) => {
     if (res.status == 200) {
         tableConfig.records = res.data.records;
@@ -35,7 +35,7 @@ const tableConfig = reactive({
     { field: 'username', header: '用户名' },
     { field: 'nickname', header: '昵称' },
     { field: 'mobile', header: '手机号' },
-    { field: 'userStatus', header: '状态' },
+    { field: 'userStatusDictLabel', header: '状态' },
   ],
   query: {
     page: 1,
@@ -43,8 +43,8 @@ const tableConfig = reactive({
     total: 0,
     userScope: 'OPERATE',
   },
-  dt: null,
   records: null,
+  dt: null,
   filters: null,
   onPage: (event) => {
     tableConfig.query.page = event.page + 1;
@@ -130,8 +130,7 @@ const confirmDelete = (row) => {
                                 <Button label="创建" icon="pi pi-plus" text @click="editForm" />
                             </div>
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <i class="pi pi-search" />
-                                <InputText v-model="tableConfig.filters['global'].value" placeholder="Search..." />
+                                <Button severity="secondary" icon="pi pi-refresh" text rounded aria-label="刷新" @click="fetchTableData" />
                             </span>
                         </div>
                     </template>
@@ -139,7 +138,7 @@ const confirmDelete = (row) => {
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
                             <Button label="编辑" text @click="editForm(slotProps.data)" />
-                            <Button label="删除" severity="warning" text class="btn-m2" @click="confirmDelete(slotProps.data)" />
+                            <Button label="删除" severity="danger" text class="btn-m2" @click="confirmDelete(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>

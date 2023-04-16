@@ -1,6 +1,7 @@
 package org.example.potm.framework.config.mybatis;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -30,10 +31,12 @@ public class FilterQueryBuilder {
     );
 
     public static void build(String filters, QueryWrapper queryWrapper) {
-        Stream<String> filterStream = Arrays.stream(filters.split(";"));
-        filterStream.forEach(filter -> {
-            buildFilter(filter, queryWrapper);
-        });
+        if(StringUtils.isNotEmpty(filters)) {
+            Stream<String> filterStream = Arrays.stream(filters.split(";"));
+            filterStream.forEach(filter -> {
+                buildFilter(filter, queryWrapper);
+            });
+        }
     }
     private static void buildFilter(String filter, QueryWrapper queryWrapper) {
         FilterMatchMode.forEach(opt -> {

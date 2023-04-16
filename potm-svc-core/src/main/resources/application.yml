@@ -69,5 +69,5 @@ app:
       - ^ACT_.*$
       - ^QRTZ_.*$
   dict:
-    enable: true
+    syncDb: true
     enumPackage: org.example.potm.framework,org.example.potm.svc.core

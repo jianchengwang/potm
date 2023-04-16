@@ -2,6 +2,7 @@ package com.example.potm.svc.core.interfaces.operate.query;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Data;
+import org.example.potm.framework.pojo.Query;
 import org.springdoc.core.annotations.ParameterObject;
 
 /**
@@ -10,9 +11,7 @@ import org.springdoc.core.annotations.ParameterObject;
  */
 @Data
 @ParameterObject
-public class SysDictQuery {
-    @Parameter(description = "模糊搜索，用户昵称")
-    private String q;
+public class SysDictQuery extends Query {
     @Parameter(description = "系统字典")
     private Boolean systemFlag;
     @Parameter(description = "枚举字典")

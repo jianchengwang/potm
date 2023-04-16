@@ -11,6 +11,8 @@ import org.springdoc.core.annotations.ParameterObject;
 @Data
 @ParameterObject
 public class Query {
+    @Parameter(description = "模糊搜索")
+    private String q;
     @Parameter(description = "过滤条件")
-    private String filters;
+    private String filter;
 }

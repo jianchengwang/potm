@@ -1,4 +1,4 @@
-import { http } from "../../utils/http";
+import { http } from "@/utils/http";
 
 export default class SysUserService {
     page = (params?: object) => {

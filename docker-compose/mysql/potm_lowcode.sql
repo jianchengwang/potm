@@ -14,6 +14,21 @@ create table lc_block
 )
 comment '代码块';
 
+create table lc_template
+(
+    id            bigint auto_increment comment '主键' primary key,
+    name          varchar(64) not null comment '模板名',
+    path          varchar(64) not null comment '模板路径',
+    code          text not null comment '模板代码',
+    remark        varchar(255) null comment '备注',
+    tags          varchar(255) null comment '标签',
+    create_at datetime DEFAULT NULL COMMENT '创建时间',
+    create_by varchar(64) DEFAULT NULL COMMENT '创建人',
+    update_at datetime DEFAULT NULL COMMENT '更新时间',
+    update_by varchar(64) DEFAULT NULL COMMENT '修改人'
+)
+    comment '代码模板';
+
 create table lc_datasource
 (
     id            bigint auto_increment comment '主键' primary key,

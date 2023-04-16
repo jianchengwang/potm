@@ -3,6 +3,7 @@ package com.example.potm.svc.core.interfaces.operate.query;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Data;
 import org.example.potm.framework.config.permission.user.UserScopeEnum;
+import org.example.potm.framework.pojo.Query;
 import org.springdoc.core.annotations.ParameterObject;
 
 /**
@@ -11,9 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
  */
 @Data
 @ParameterObject
-public class SysUserQuery {
-    @Parameter(description = "模糊搜索，用户昵称")
-    private String q;
+public class SysUserQuery extends Query {
     @Parameter(description = "用户归属")
     private UserScopeEnum userScope;
     @Parameter(description = "用户状态")

@@ -11,9 +11,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class DictProperties {
     /**
-     * 是否启用
+     * 是否同步到数据库
      */
-    private boolean enable = true;
+    private boolean syncDb = true;
     /**
      * 枚举包
      */

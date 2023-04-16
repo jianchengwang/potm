@@ -24,7 +24,7 @@
     "vue-json-pretty": "^2.2.4",
     "vue-router": "^4.1.5",
     "codemirror": "^5.65.3",
-    "codemirror-editor-vue3": "^2.0.6"
+    "codemirror-editor-vue3": "^2.3.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",

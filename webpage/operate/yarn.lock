@@ -821,7 +821,7 @@ chart.js@3.3.2:
   optionalDependencies:
     fsevents "~2.3.2"
 
-codemirror-editor-vue3@^2.0.6:
+codemirror-editor-vue3@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npmmirror.com/codemirror-editor-vue3/-/codemirror-editor-vue3-2.3.0.tgz#e6c97aba62eee8bc1d980ea78e112179777d5a32"
   integrity sha512-e6y/2wBL4Xb4SD10e/jq/lcoIeiWPMw2XnF6KePLlbmOphZ830XGU3kSz52qkoa9RUjaY6zHuSlwd09o13O/oQ==

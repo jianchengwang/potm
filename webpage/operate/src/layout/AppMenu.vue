@@ -33,9 +33,9 @@ const model = ref([
         label: '低代码',
         icon: 'pi pi-fw pi-bookmark',
         items: [
-            { label: '数据源', icon: 'pi pi-fw pi-list', to: '/lowcode/datasource' },
-            { label: '代码生成', icon: 'pi pi-fw pi-chart-bar', to: '/lowcode/codeGen' },
             { label: '代码块', icon: 'pi pi-fw pi-code', to: '/lowcode/block' },
+            { label: '模板管理', icon: 'pi pi-fw pi-chart-bar', to: '/lowcode/template' },
+            { label: '代码生成', icon: 'pi pi-fw pi-list', to: '/lowcode/codeGen' },
             { label: '表单设计', icon: 'pi pi-fw pi-pencil', to: '/lowcode/formDesign' }
         ]
     },

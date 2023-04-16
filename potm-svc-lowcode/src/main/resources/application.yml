@@ -66,5 +66,5 @@ app:
   cdc:
     enable: false
   dict:
-    enable: false
+    syncDb: false
     enumPackage: org.example.framework,org.example.potm.svc.lowcode

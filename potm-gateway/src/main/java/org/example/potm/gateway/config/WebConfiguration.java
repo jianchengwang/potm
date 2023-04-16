@@ -32,7 +32,7 @@ public class WebConfiguration {
                 headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
                 headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "PUT,POST,GET,DELETE,OPTIONS");
 
-                headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,"Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,authorization,Authorization");
+                headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,"Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With ,authorization ,Authorization ,filename");
                 headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
                 headers.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
                 headers.add(HttpHeaders.ACCESS_CONTROL_MAX_AGE, MAX_AGE);

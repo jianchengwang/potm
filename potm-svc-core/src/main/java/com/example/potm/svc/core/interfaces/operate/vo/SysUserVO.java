@@ -2,6 +2,7 @@ package com.example.potm.svc.core.interfaces.operate.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.example.potm.framework.config.dict.DictInfo;
 import org.example.potm.framework.config.permission.user.UserScopeEnum;
 import org.example.potm.framework.config.permission.user.UserStatusEnum;
 import org.example.potm.framework.pojo.VO;
@@ -26,8 +27,10 @@ public class SysUserVO implements VO {
     private String mobile;
 
     @Schema(description = "用户归属")
+    @DictInfo
     private UserScopeEnum userScope;
 
     @Schema(description = "用户状态")
+    @DictInfo
     private UserStatusEnum userStatus;
 }

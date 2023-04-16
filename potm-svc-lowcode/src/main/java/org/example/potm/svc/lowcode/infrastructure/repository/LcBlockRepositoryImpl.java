@@ -30,7 +30,7 @@ public class LcBlockRepositoryImpl extends ServiceImpl<LcBlockDao, LcBlock> impl
     @Override
     public IPage<LcBlock> page(PageInfo pageInfo, LcBlockQuery param) {
         QueryWrapper<LcBlock> query = MpHelper.query("a", BeanUtil.copyProperties(param, LcBlock.class));
-        FilterQueryBuilder.build(param.getFilters(), query);
+        FilterQueryBuilder.build(param.getFilter(), query);
         return blockDao.page(PageUtils.buildPage(pageInfo), param, query);
     }
 

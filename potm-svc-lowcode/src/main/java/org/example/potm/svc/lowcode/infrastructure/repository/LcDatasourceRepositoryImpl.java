@@ -30,7 +30,7 @@ public class LcDatasourceRepositoryImpl extends ServiceImpl<LcDatasourceDao, LcD
     @Override
     public IPage<LcDatasource> page(PageInfo pageInfo, LcDatasourceQuery param) {
         QueryWrapper<LcDatasource> query = MpHelper.query("a", BeanUtil.copyProperties(param, LcDatasource.class));
-        FilterQueryBuilder.build(param.getFilters(), query);
+        FilterQueryBuilder.build(param.getFilter(), query);
         return datasourceDao.page(PageUtils.buildPage(pageInfo), param, query);
     }
 

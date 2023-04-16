@@ -31,4 +31,8 @@ public class LcBlockApplication {
     public void save(LcBlock param) {
         blockRepository.saveOrUpdate(param);
     }
+
+    public void delete(Long id) {
+        blockRepository.removeById(id);
+    }
 }

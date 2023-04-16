@@ -36,4 +36,11 @@ public class LcBlockController {
         blockApplication.save(param);
         return Response.ok();
     }
+
+    @Operation(summary = "删除", description = "删除")
+    @DeleteMapping("{id}")
+    public Response<Void> deleteById(@PathVariable Long id) {
+        blockApplication.delete(id);
+        return Response.ok();
+    }
 }

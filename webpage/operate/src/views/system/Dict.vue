@@ -1,52 +1,50 @@
 <script setup>
 import { FilterMatchMode } from 'primevue/api';
 import { ref, reactive, onMounted, onBeforeMount } from 'vue';
-import Paginator from 'primevue/paginator';
-import { dictPage, dictFetchAll, dictItemList } from '@/api/svc-core/sysDict';
+import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
+const confirm = useConfirm();
 const toast = useToast();
 
-import VueJsonPretty from 'vue-json-pretty';
-import 'vue-json-pretty/lib/styles.css';
+import SysDictService from '@/service/svc-core/SysDictService.ts';
+const sysDictService = new SysDictService();
 
-const tableTitle = ref("操作日志")
-const tableColumns = [
-  { field: 'id', header: 'ID' },
-  { field: 'svcName', header: '服务名' },
-  { field: 'dictKey', header: '字典标识' },
-  { field: 'description', header: '描述' },
-  { field: 'remark', header: '备注' },
-  { field: 'systemFlag', header: '系统字典' },
-  { field: 'enumFlag', header: '枚举字典' },
-]
-const queryParam = ref({
-})
-const records = ref(null);
-const dt = ref(null);
-const filters = ref({});
-
-const expandedRows = ref([]);
-
-const fetchData = () => {
-  queryParam.value.filters = filters; 
-  dictFetchAll(queryParam.value).then((res) => {
-        if (res.status == 200) {
-            records.value = res.data;
-        }
+const fetchTableData = () => {
+//   tableConfig.query.filters = tableConfig.filters; 
+  sysDictService.fetchAll(tableConfig.query).then((res) => {
+    if (res.status == 200) {
+        tableConfig.records = res.data;
+      }
     });
 };
 
 onBeforeMount(() => {
-    initFilters();
+    tableConfig.filters = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
 });
 onMounted(() => {
-  fetchData();
+    fetchTableData();
 });
-const initFilters = () => {
-    filters.value = {
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-    };
-};
+
+const tableConfig = reactive({
+  title: '系统字典',
+  columns: [
+    { field: 'id', header: 'ID' },
+    { field: 'svcName', header: '服务名' },
+    { field: 'dictKey', header: '字典标识' },
+    { field: 'description', header: '描述' },
+    { field: 'remark', header: '备注' },
+    { field: 'systemFlag', header: '系统字典' },
+    { field: 'enumFlag', header: '枚举字典' },
+  ],
+  query: {
+  },
+  records: null,
+  dt: null,
+  filters: null
+});
+const expandedRows = ref([]);
 </script>
 
 <template>
@@ -55,10 +53,10 @@ const initFilters = () => {
             <div class="card">
                 <Toast />
                 <DataTable
-                    ref="dt"
-                    :value="records"
+                    :ref="tableConfig.dt"
+                    :value="tableConfig.records"
                     dataKey="id"
-                    :filters="filters"
+                    :filters="tableConfig.filters"
                     responsiveLayout="scroll"
                     paginator :rows="10" :rowsPerPageOptions="[10,20,30]"
                     v-model:expandedRows="expandedRows"
@@ -67,12 +65,15 @@ const initFilters = () => {
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText v-model="filters['global'].value" placeholder="Search..." />
+                                <InputText v-model="tableConfig.filters['global'].value" placeholder="Search..." />
+                            </span>
+                            <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                <Button severity="secondary" icon="pi pi-refresh" text rounded aria-label="刷新" @click="fetchTableData" />
                             </span>
                         </div>
                     </template>
                     <Column expander style="width: 5rem" />
-                    <Column v-for="col of tableColumns" :key="col.field" :field="col.field" :header="col.header"></Column>
+                    <Column v-for="col of tableConfig.columns" :key="col.field" :field="col.field" :header="col.header"></Column>
                     <template #expansion="slotProps">
                       <DataTable :value="slotProps.data.itemList" dataKey="id" tableStyle="min-width: 60rem">
                           <Column field="type" header="类型"></Column>

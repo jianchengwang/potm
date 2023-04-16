@@ -54,9 +54,14 @@ const router = createRouter({
             component: () => import('@/views/lowcode/Block.vue')
         },
         {
-            path: '/lowcode/datasource',
-            name: 'lowcodeDatasource',
-            component: () => import('@/views/lowcode/Datasource.vue')
+            path: '/lowcode/template',
+            name: 'lowcodeTemplate',
+            component: () => import('@/views/lowcode/Template.vue')
+        },
+        {
+            path: '/lowcode/codeGen',
+            name: 'lowcodeCodeGen',
+            component: () => import('@/views/lowcode/CodeGen.vue')
         },
         {
             path: '/uikit/formlayout',

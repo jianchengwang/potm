@@ -29,11 +29,10 @@ public class DictConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "app.dict.enable", havingValue = "true", matchIfMissing = true)
-    public DictEnumSyncDbProcessor dictEnumSyncDbProcessor(
+    public DictProcessor dictEnumSyncDbProcessor(
             JdbcTemplate jdbcTemplate,
             DictProperties dictProperties) {
-        DictEnumSyncDbProcessor processor = new DictEnumSyncDbProcessor(svcName, dictProperties, jdbcTemplate);
+        DictProcessor processor = new DictProcessor(svcName, dictProperties, jdbcTemplate);
         return processor;
     }
 
